@@ -1,0 +1,5 @@
+ml_engine.settings:
+  title: 'Google ML Engine settings'
+  parent: system.admin_config_media
+  description: 'Configure Google ML Engine.'
+  route_name: ml_engine.settings

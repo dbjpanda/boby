@@ -1,7 +1,16 @@
 ml_engine.settings:
-  path: '/admin/config/ml-engine/credential'
+  path: '/admin/config/media/ml-engine'
   defaults:
     _form: 'Drupal\ml_engine\Form\MlEngineSettingsForm'
     _title: 'Google Cloud ML Engine Settings'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.admin_test:
+  path: '/admin/config/media/ml_engine/prediction/test'
+  defaults:
+    _title: 'ML Engine - Get Prediction'
+    _description: 'Give the predictions URL and json data and get back predictions.'
+    _form: '\Drupal\ml_engine\Form\GetTestPrediction'
   requirements:
     _permission: 'administer ml_engine'
