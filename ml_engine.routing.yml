@@ -1,0 +1,7 @@
+ml_engine.settings:
+  path: '/admin/config/ml-engine/credential'
+  defaults:
+    _form: 'Drupal\ml_engine\Form\MlEngineSettingsForm'
+    _title: 'Google Cloud ML Engine Settings'
+  requirements:
+    _permission: 'administer google ml_engine'

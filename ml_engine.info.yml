@@ -1,0 +1,5 @@
+name: Google Machine Learning Engine
+type: module
+description: Integrate Google Machine Learning Engine to Drupal 8.
+package: Machine Learning
+core: '8.x'
