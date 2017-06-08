@@ -4,4 +4,4 @@ ml_engine.settings:
     _form: 'Drupal\ml_engine\Form\MlEngineSettingsForm'
     _title: 'Google Cloud ML Engine Settings'
   requirements:
-    _permission: 'administer google ml_engine'
+    _permission: 'administer ml_engine'
