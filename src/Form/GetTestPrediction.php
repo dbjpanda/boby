@@ -68,7 +68,18 @@ class GetTestPrediction extends FormBase {
           '#rows' => 15
         );      
     }
-    
+
+    // Print prediction error.
+    if ($error = $config->get('test_error')){
+        $form['error'] = array(
+          '#type' => 'textarea',
+          '#title' => $this->t('Error'),
+          '#attributes' => array('readonly' => 'readonly'),
+          '#default_value' => $error,    
+          '#rows' => 15
+        );      
+    }
+
     return $form;
   }
 
@@ -102,7 +113,15 @@ class GetTestPrediction extends FormBase {
     // Send prediction request.
     $response = $service->projects->predict($url, new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1PredictRequest($data_array));
 
-    $config->set('test_response', $response->__get('predictions'))->save();    
+    $error = $response->__get('error');
+    $predictions = $response->__get('predictions');
+    $config->set('test_response', $predictions)->save(); 
+    $config->set('test_error', $error)->save(); 
+
+    print "<pre>";
+    print_r($response->__get('error'));
+    print "</pre>";
+    //die();   
   }
 
 }
