@@ -1,16 +1,70 @@
 ml_engine.settings:
   path: '/admin/config/media/ml-engine'
   defaults:
-    _form: 'Drupal\ml_engine\Form\MlEngineSettingsForm'
+    _form: 'Drupal\ml_engine\Form\SettingsForm'
     _title: 'Google Cloud ML Engine Settings'
   requirements:
     _permission: 'administer ml_engine'
 
-ml_engine.admin_test:
-  path: '/admin/config/media/ml_engine/prediction/test'
+ml_engine.test:
+  path: '/admin/config/media/ml_engine/test'
   defaults:
-    _title: 'ML Engine - Get Prediction'
+    _title: 'ML Engine'
+    _description: 'Give the service account credential.'
+    _form: '\Drupal\ml_engine\Form\TestCredential'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.prediction:
+  path: '/admin/config/media/ml_engine/test/predict'
+  defaults:
+    _title: 'ML Engine - Prediction Test'
     _description: 'Give the predictions URL and json data and get back predictions.'
-    _form: '\Drupal\ml_engine\Form\GetTestPrediction'
+    _form: '\Drupal\ml_engine\Form\TestPredict'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.job:
+  path: '/admin/config/media/ml_engine/test/job'
+  defaults:
+    _title: 'Job'
+    _description: 'Try Job'
+    _form: '\Drupal\ml_engine\Form\TestJobCreate'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.job.create:
+  path: '/admin/config/media/ml_engine/test/job/create'
+  defaults:
+    _title: 'ML Engine - Job Create'
+    _description: 'Try Job'
+    _form: '\Drupal\ml_engine\Form\TestJobCreate'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.job.get:
+  path: '/admin/config/media/ml_engine/test/job/get'
+  defaults:
+    _title: 'ML Engine - Job Get'
+    _description: 'Try Job'
+    _form: '\Drupal\ml_engine\Form\TestJobGet'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.job.list:
+  path: '/admin/config/media/ml_engine/test/job/list'
+  defaults:
+    _title: 'ML Engine - Job List'
+    _description: 'Try Job'
+    _form: '\Drupal\ml_engine\Form\TestJobList'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.job.cancel:
+  path: '/admin/config/media/ml_engine/test/job/cancel'
+  defaults:
+    _title: 'ML Engine - Job Cancel'
+    _description: 'Try Job'
+    _form: '\Drupal\ml_engine\Form\TestJobCancel'
   requirements:
     _permission: 'administer ml_engine'

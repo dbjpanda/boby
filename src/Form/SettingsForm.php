@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Configure site information settings for this site.
  */
-class MlEngineSettingsForm extends ConfigFormBase {
+class SettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}

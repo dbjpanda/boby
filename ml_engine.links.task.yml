@@ -1,0 +1,34 @@
+ml_engine.test:
+  route_name: ml_engine.test
+  base_route: ml_engine.test
+  title: 'Credential'
+
+ml_engine.test.prediction:
+  route_name: ml_engine.test.prediction
+  base_route: ml_engine.test
+  title: 'Predict'
+
+ml_engine.test.job:
+  route_name: ml_engine.test.job.create
+  base_route: ml_engine.test
+  title: 'Job'
+
+ml_engine.test.job.create:
+  route_name: ml_engine.test.job.create
+  parent_id: ml_engine.test.job
+  title: 'Create'
+
+ml_engine.test.job.get:
+  route_name: ml_engine.test.job.get
+  parent_id: ml_engine.test.job
+  title: 'Get'
+
+ml_engine.test.job.list:
+  route_name: ml_engine.test.job.list
+  parent_id: ml_engine.test.job
+  title: 'List'
+
+ml_engine.test.job.cancel:
+  route_name: ml_engine.test.job.cancel
+  parent_id: ml_engine.test.job
+  title: 'Cancel'  
