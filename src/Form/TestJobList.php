@@ -108,7 +108,6 @@ class TestJobList extends FormBase {
     print "<pre>";
     print_r($jobs_array);
     print "</pre>";
-    die();
 
   }
 
