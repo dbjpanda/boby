@@ -19,16 +19,16 @@ class TestModelGet extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $form['job_name'] = array(
+    $form['name'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Job Name'),
+      '#title' => $this->t('Model Name'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('job_name'),
+      '#default_value' => $this->config->get('name'),
     );
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = array(
       '#type' => 'submit',
-      '#value' => $this->t('Get Job'),
+      '#value' => $this->t('Get Model'),
       '#button_type' => 'primary',
     );
 
@@ -50,7 +50,7 @@ class TestModelGet extends FormBase {
           '#type' => 'textarea',
           '#title' => $this->t('Error'),
           '#attributes' => array('readonly' => 'readonly'),
-          '#default_value' => $error,    
+          '#default_value' => json_encode($error, JSON_PRETTY_PRINT),    
           '#rows' => 15,
           '#weight' => 100
         );      
@@ -65,12 +65,12 @@ class TestModelGet extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
   
     $this->config->delete();
-    $job = $form_state->getValue('job_name');
-    $this->config ->set('job_name', $job) ->save();
+    $name = $form_state->getValue('name');
+    $this->config ->set('name', $name) ->save();
     
-    $status = \Drupal::service('ml_engine.job')->get($job);
+    $status = \Drupal::service('ml_engine.model')->get($name);
     if($status['success']){
-      drupal_set_message('Successfully got job '.$job, "status");
+      drupal_set_message('Successfully got job '.$name, "status");
       $response_job = (array) $status['response'];
       $this->config->set('response', $response_job)->save();
     }else{

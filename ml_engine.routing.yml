@@ -105,3 +105,30 @@ ml_engine.test.model.get.form:
     _form: '\Drupal\ml_engine\Form\Model\TestModelGet'
   requirements:
     _permission: 'administer ml_engine'
+
+ml_engine.test.model.list:
+  path: '/admin/config/media/ml_engine/test/model/list'
+  defaults:
+    _title: 'ML Engine - Model List'
+    _description: 'Get Model List'
+    _controller: '\Drupal\ml_engine\Controller\ModelController::overview'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.model.list.refresh:
+  path: '/admin/config/media/ml_engine/test/model/list/refresh'
+  defaults:
+    _title: 'ML Engine - Model List Refresh'
+    _description: 'Refresh Model Overview page to get updated list'
+    _controller: '\Drupal\ml_engine\Controller\ModelController::refresh_overview_page'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.model.delete:
+  path: '/admin/config/media/ml_engine/test/model/delete/{model}'
+  defaults:
+    _title: 'ML Engine - Model Delete'
+    _description: 'Delete Model'
+    _controller: '\Drupal\ml_engine\Controller\ModelController::deleteList'
+  requirements:
+    _permission: 'administer ml_engine'

@@ -47,3 +47,8 @@ ml_engine.test.model.get:
   route_name: ml_engine.test.model.get.form
   parent_id: ml_engine.test.model
   title: 'Get'
+
+ml_engine.test.model.list:
+  route_name: ml_engine.test.model.list
+  parent_id: ml_engine.test.model
+  title: 'List'

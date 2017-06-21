@@ -79,7 +79,8 @@ class JobController extends ControllerBase {
       '#rows' => $rows,
       '#empty' => $this->t('No jobs available.'),
     ];
-
+    
+    //$build['form'] = \Drupal::formBuilder()->getForm('\Drupal\ml_engine\Form\Job\TestJobCancel');
     return $build;
   }
 

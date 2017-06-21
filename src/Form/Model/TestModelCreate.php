@@ -20,51 +20,27 @@ class TestModelCreate extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $form['job'] = array(
+    $form['name'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Job Name'),
+      '#title' => $this->t('Model Name'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('job'),
+      '#default_value' => $this->config->get('name'),
     );
-    $form['package_uri'] = array(
+
+    $form['default_version'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Package URI'),
+      '#title' => $this->t('Default Version'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('package_uri'),
+      '#default_value' => $this->config->get('default_version'),
     );
-    $form['module'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Module'),
+
+    $form['description'] = array(
+      '#type' => 'textarea',
+      '#title' => $this->t('Description'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('module'),
+      '#default_value' => $this->config->get('description'),
     );
-    $form['train_data_uri'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Train Data URI'),
-      '#default_value' => $this->config->get('train_data_uri'),
-    );
-    $form['test_data_uri'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Test Data URI'),
-      '#default_value' => $this->config->get('test_data_uri'),
-    );
-    $form['train_steps'] = array(
-      '#type' => 'number',
-      '#title' => $this->t('Train Steps'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('train_steps'),
-    );
-    $form['verbosity'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Verbosity'),
-      '#default_value' => $this->config->get('verbosity'),
-    );
-    $form['job_dir'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Output Directory'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('job_dir'),
-    );
+
     $form['region'] = array(
       '#type' => 'select',
       '#options' => array(
@@ -78,28 +54,10 @@ class TestModelCreate extends FormBase {
       '#default_value' => $this->config->get('region'),
     );
 
-    $form['scale_tier'] = array(
-      '#type' => 'select',
-      '#options' => array(
-        'BASIC' => t('BASIC'),
-        'STANDARD_1' => t('STANDARD_1'),
-        'PREMIUM_1' => t('PREMIUM_1'),
-        'BASIC_GPU' => t('BASIC_GPU')
-      ),
-      '#title' => $this->t('Scale Tier'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('scale_tier'),
-    );
-    $form['arguments'] = array(
-      '#type' => 'textarea',
-      '#title' => $this->t('Arguments'),
-      '#default_value' => $this->config->get('arguments'),
-      '#rows' => 15,
-    );
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = array(
       '#type' => 'submit',
-      '#value' => $this->t('Create Job'),
+      '#value' => $this->t('Create Model'),
       '#button_type' => 'primary',
     );
 
@@ -133,22 +91,18 @@ class TestModelCreate extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
     $this->config->delete();
-
-    $keys = array('job','package_uri','module','train_data_uri',
-    'test_data_uri', 'train_steps', 'verbosity','job_dir','region','scale_tier','arguments');
-
-    $jobPara = [];
-    
+    $keys = array('name', 'description', 'default_version', 'region');
+    $para = [];
     foreach ($keys as $key) {
       ${$key} = $form_state->getValue($key);
-      $jobPara[$key] = ${$key};
+      $para[$key] = ${$key};
       $this->config->set($key,${$key})->save();
     }
 
-    $status = \Drupal::service('ml_engine.job')->JobCreate($jobPara);
+    $status = \Drupal::service('ml_engine.model')->ModelCreate($para);
 
     if($status['success']){
-      drupal_set_message('Successfully created job '.$job, "status");
+      drupal_set_message('Successfully created model '.$name, "status");
       $response_job = (array) $status['response'];
       $this->config->set('response', $response_job)->save();
     }else{

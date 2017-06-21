@@ -1,4 +1,8 @@
 services:
+  ml_engine.model:
+    class: Drupal\ml_engine\Model
+    arguments: []
+
   ml_engine.job:
     class: Drupal\ml_engine\Job
     arguments: []
