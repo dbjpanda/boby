@@ -29,7 +29,7 @@ ml_engine.test.job:
   defaults:
     _title: 'Job'
     _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\TestJobCreate'
+    _form: '\Drupal\ml_engine\Form\Job\TestJobCreate'
   requirements:
     _permission: 'administer ml_engine'
 
@@ -38,7 +38,7 @@ ml_engine.test.job.create.form:
   defaults:
     _title: 'ML Engine - Job Create'
     _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\TestJobCreate'
+    _form: '\Drupal\ml_engine\Form\Job\TestJobCreate'
   requirements:
     _permission: 'administer ml_engine'
 
@@ -47,7 +47,7 @@ ml_engine.test.job.get.form:
   defaults:
     _title: 'ML Engine - Job Get'
     _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\TestJobGet'
+    _form: '\Drupal\ml_engine\Form\Job\TestJobGet'
   requirements:
     _permission: 'administer ml_engine'
 
@@ -74,7 +74,7 @@ ml_engine.test.job.cancel.form:
   defaults:
     _title: 'ML Engine - Job Cancel'
     _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\TestJobCancel'
+    _form: '\Drupal\ml_engine\Form\Job\TestJobCancel'
   requirements:
     _permission: 'administer ml_engine'
 
@@ -84,5 +84,24 @@ ml_engine.test.job.cancel:
     _title: 'ML Engine - Job Cancel'
     _description: 'Try Job'
     _controller: '\Drupal\ml_engine\Controller\JobController::cancelList'
+  requirements:
+    _permission: 'administer ml_engine'
+
+
+ml_engine.test.model.create.form:
+  path: '/admin/config/media/ml_engine/test/model/create'
+  defaults:
+    _title: 'ML Engine - Model Create'
+    _description: 'Create Model'
+    _form: '\Drupal\ml_engine\Form\Model\TestModelCreate'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.model.get.form:
+  path: '/admin/config/media/ml_engine/test/model/get'
+  defaults:
+    _title: 'ML Engine - Model Get'
+    _description: 'Get model details'
+    _form: '\Drupal\ml_engine\Form\Model\TestModelGet'
   requirements:
     _permission: 'administer ml_engine'

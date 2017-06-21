@@ -32,3 +32,18 @@ ml_engine.test.job.cancel.form:
   route_name: ml_engine.test.job.cancel.form
   parent_id: ml_engine.test.job
   title: 'Cancel'  
+
+ml_engine.test.model:
+  route_name: ml_engine.test.model.create.form
+  base_route: ml_engine.test
+  title: 'Model'
+
+ml_engine.test.model.create:
+  route_name: ml_engine.test.model.create.form
+  parent_id: ml_engine.test.model
+  title: 'Create'
+
+ml_engine.test.model.get:
+  route_name: ml_engine.test.model.get.form
+  parent_id: ml_engine.test.model
+  title: 'Get'

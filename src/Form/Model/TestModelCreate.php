@@ -1,21 +1,21 @@
 <?php
 
-namespace Drupal\ml_engine\Form;
+namespace Drupal\ml_engine\Form\Model;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 
 
-class TestJobCreate extends FormBase {
+class TestModelCreate extends FormBase {
 
 
   public function getFormId() {
-    return 'ml_engine_job_create';
+    return 'ml_engine_model_create';
   }
 
   public function __construct(){
-    $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.job.create');
+    $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.model.create');
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {
