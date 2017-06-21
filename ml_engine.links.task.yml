@@ -52,3 +52,18 @@ ml_engine.test.model.list:
   route_name: ml_engine.test.model.list
   parent_id: ml_engine.test.model
   title: 'List'
+
+ml_engine.test.version:
+  route_name: ml_engine.test.version.create.form
+  base_route: ml_engine.test
+  title: 'Version'
+
+ml_engine.test.version.create:
+  route_name: ml_engine.test.version.create.form
+  parent_id: ml_engine.test.version
+  title: 'Create'
+
+ml_engine.test.version.get:
+  route_name: ml_engine.test.version.get.form
+  parent_id: ml_engine.test.version
+  title: 'Get'

@@ -7,6 +7,10 @@ services:
     class: Drupal\ml_engine\Job
     arguments: []
 
+  ml_engine.version:
+    class: Drupal\ml_engine\Version
+    arguments: []
+
   ml_engine.project:
     class: Drupal\ml_engine\project
     arguments: []

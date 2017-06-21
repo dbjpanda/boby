@@ -132,3 +132,22 @@ ml_engine.test.model.delete:
     _controller: '\Drupal\ml_engine\Controller\ModelController::deleteList'
   requirements:
     _permission: 'administer ml_engine'
+
+
+ml_engine.test.version.create.form:
+  path: '/admin/config/media/ml_engine/test/version/create'
+  defaults:
+    _title: 'ML Engine - Version Create'
+    _description: 'Create Version'
+    _form: '\Drupal\ml_engine\Form\Version\TestVersionCreate'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.version.get.form:
+  path: '/admin/config/media/ml_engine/test/version/get'
+  defaults:
+    _title: 'ML Engine - Version Get'
+    _description: 'Get model details'
+    _form: '\Drupal\ml_engine\Form\Version\TestVersionGet'
+  requirements:
+    _permission: 'administer ml_engine'
