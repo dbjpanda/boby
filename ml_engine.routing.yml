@@ -1,4 +1,4 @@
-ml_engine.settings:
+ml_engine.settings.form:
   path: '/admin/config/media/ml-engine'
   defaults:
     _form: 'Drupal\ml_engine\Form\SettingsForm'
@@ -15,7 +15,7 @@ ml_engine.test:
   requirements:
     _permission: 'administer ml_engine'
 
-ml_engine.test.prediction:
+ml_engine.test.prediction.form:
   path: '/admin/config/media/ml_engine/test/predict'
   defaults:
     _title: 'ML Engine - Prediction Test'
@@ -33,7 +33,7 @@ ml_engine.test.job:
   requirements:
     _permission: 'administer ml_engine'
 
-ml_engine.test.job.create:
+ml_engine.test.job.create.form:
   path: '/admin/config/media/ml_engine/test/job/create'
   defaults:
     _title: 'ML Engine - Job Create'
@@ -42,7 +42,7 @@ ml_engine.test.job.create:
   requirements:
     _permission: 'administer ml_engine'
 
-ml_engine.test.job.get:
+ml_engine.test.job.get.form:
   path: '/admin/config/media/ml_engine/test/job/get'
   defaults:
     _title: 'ML Engine - Job Get'
@@ -56,15 +56,33 @@ ml_engine.test.job.list:
   defaults:
     _title: 'ML Engine - Job List'
     _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\TestJobList'
+    _controller: '\Drupal\ml_engine\Controller\JobController::overview'
   requirements:
     _permission: 'administer ml_engine'
 
-ml_engine.test.job.cancel:
+ml_engine.test.job.list.refresh:
+  path: '/admin/config/media/ml_engine/test/job/list/refresh'
+  defaults:
+    _title: 'ML Engine - Job List Refresh'
+    _description: 'Try Job'
+    _controller: '\Drupal\ml_engine\Controller\JobController::refresh_overview_page'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.job.cancel.form:
   path: '/admin/config/media/ml_engine/test/job/cancel'
   defaults:
     _title: 'ML Engine - Job Cancel'
     _description: 'Try Job'
     _form: '\Drupal\ml_engine\Form\TestJobCancel'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.job.cancel:
+  path: '/admin/config/media/ml_engine/test/job/cancel/{job}'
+  defaults:
+    _title: 'ML Engine - Job Cancel'
+    _description: 'Try Job'
+    _controller: '\Drupal\ml_engine\Controller\JobController::cancelList'
   requirements:
     _permission: 'administer ml_engine'

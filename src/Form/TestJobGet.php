@@ -1,41 +1,29 @@
 <?php
-
-/**
- * @file
- * Contains Drupal\slack\Form\SendTestMessageForm.
- */
-
 namespace Drupal\ml_engine\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 
-/**
- * Class SendTestMessageForm.
- *
- * @package Drupal\slack\Form
- */
 class TestJobGet extends FormBase {
 
-  /**
-   * {@inheritdoc}
-   */
+  public $config;
+
   public function getFormId() {
-    return 'ml_engine_get_test_prediction';
+    return 'ml_engine_job_get';
   }
 
-  /**
-   * {@inheritdoc}
-   */
+  public function __construct(){
+    $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.job.get');
+  }
+
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $config = \Drupal::configFactory()->getEditable('ml_engine.test.job.get');
     $form['job_name'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Job Name'),
       '#required' => TRUE,
-      '#default_value' => $config->get('job_name'),
+      '#default_value' => $this->config->get('job_name'),
     );
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = array(
@@ -45,7 +33,7 @@ class TestJobGet extends FormBase {
     );
 
     // Print prediction response.
-    if ($response = $config->get('response')){
+    if ($response = $this->config->get('response')){
         $form['response'] = array(
           '#type' => 'textarea',
           '#title' => $this->t('Response'),
@@ -57,7 +45,7 @@ class TestJobGet extends FormBase {
     }
 
     // Print prediction error.
-    if ($error = $config->get('error')){
+    if ($error = $this->config->get('error')){
         $form['error'] = array(
           '#type' => 'textarea',
           '#title' => $this->t('Error'),
@@ -76,41 +64,19 @@ class TestJobGet extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
   
-    $config = \Drupal::configFactory()->getEditable('ml_engine.test.job.get');
-    $config->delete();
-    $credential = \Drupal::configFactory()->getEditable('ml_engine.test')->get('credential');
-
-    // Set config variables. 
-    $project_name = \Drupal::configFactory()->getEditable('ml_engine.test')->get('project');
-    $job_name = $form_state->getValue('job_name');    
-    $config ->set('job_name', $job_name) ->save();
-    $name = $project_name."/jobs/".$job_name;
+    $this->config->delete();
+    $job = $form_state->getValue('job_name');
+    $this->config ->set('job_name', $job) ->save();
     
-    // Set parameters for prediction request.
-    $credential_json = json_decode($credential, true);
-
-    // Creting client and services.
-    $client = new \Google_Client();
-    $client->setAuthConfig($credential_json);
-    $client->addScope(\Google_Service_CloudMachineLearningEngine::CLOUD_PLATFORM);
-    $service = new \Google_Service_CloudMachineLearningEngine($client);
-
-    // Get Job details.
-    try{
-    $response = $service->projects_jobs->get($name);
-    }catch (\Google_Service_Exception $ex){
-      $error = json_decode($ex->getMessage(), true)['error'];
-      $message = $error['message'];
-      $code = $error['code'];
-      $config->set('error',$message)->save();
-      drupal_set_message($message,'error');
-      return;
+    $status = \Drupal::service('ml_engine.job')->get($job);
+    if($status['success']){
+      drupal_set_message('Successfully got job '.$job, "status");
+      $response_job = (array) $status['response'];
+      $this->config->set('response', $response_job)->save();
+    }else{
+      drupal_set_message($status['response']['message'], "error");
+      $this->config->set('error', $status['response'])->save();    
     }
-    $job = (array) $response;
-
-    $config->set('response', $job)->save();
-
-
   }
 
 }

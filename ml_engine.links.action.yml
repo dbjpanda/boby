@@ -1,0 +1,5 @@
+ml_engine.feed_add:
+  route_name: ml_engine.test.job.list.refresh
+  title: 'Refresh'
+  appears_on:
+    - 'ml_engine.test.job.list'

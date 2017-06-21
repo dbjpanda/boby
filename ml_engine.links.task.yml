@@ -4,22 +4,22 @@ ml_engine.test:
   title: 'Credential'
 
 ml_engine.test.prediction:
-  route_name: ml_engine.test.prediction
+  route_name: ml_engine.test.prediction.form
   base_route: ml_engine.test
   title: 'Predict'
 
 ml_engine.test.job:
-  route_name: ml_engine.test.job.create
+  route_name: ml_engine.test.job.create.form
   base_route: ml_engine.test
   title: 'Job'
 
 ml_engine.test.job.create:
-  route_name: ml_engine.test.job.create
+  route_name: ml_engine.test.job.create.form
   parent_id: ml_engine.test.job
   title: 'Create'
 
 ml_engine.test.job.get:
-  route_name: ml_engine.test.job.get
+  route_name: ml_engine.test.job.get.form
   parent_id: ml_engine.test.job
   title: 'Get'
 
@@ -28,7 +28,7 @@ ml_engine.test.job.list:
   parent_id: ml_engine.test.job
   title: 'List'
 
-ml_engine.test.job.cancel:
-  route_name: ml_engine.test.job.cancel
+ml_engine.test.job.cancel.form:
+  route_name: ml_engine.test.job.cancel.form
   parent_id: ml_engine.test.job
   title: 'Cancel'  

@@ -1,0 +1,16 @@
+services:
+  ml_engine.job:
+    class: Drupal\ml_engine\Job
+    arguments: []
+
+  ml_engine.project:
+    class: Drupal\ml_engine\project
+    arguments: []
+
+  ml_engine.predict:
+    class: Drupal\ml_engine\predict
+    arguments: []
+
+  ml_engine.cloud_service:
+    class: Drupal\ml_engine\MLEngineService
+    arguments: []

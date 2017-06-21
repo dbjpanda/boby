@@ -1,41 +1,31 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\slack\Form\SendTestMessageForm.
- */
-
 namespace Drupal\ml_engine\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\ml_engine\Controller\JobController;
 
 
-/**
- * Class SendTestMessageForm.
- *
- * @package Drupal\slack\Form
- */
 class TestJobCancel extends FormBase {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getFormId() {
-    return 'ml_engine_get_test_prediction';
+  public $config;
+
+  public function __construct(){
+    $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.job.cancel');
   }
 
-  /**
-   * {@inheritdoc}
-   */
+  public function getFormId() {
+    return 'ml_engine_job_cancel';
+  }
+
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $config = \Drupal::configFactory()->getEditable('ml_engine.test.job.cancel');
     $form['job_name'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Job Name'),
       '#required' => TRUE,
-      '#default_value' => $config->get('job_name'),
+      '#default_value' => $this->config->get('job_name'),
     );
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = array(
@@ -45,7 +35,7 @@ class TestJobCancel extends FormBase {
     );
 
     // Print prediction response.
-    if ($response = $config->get('response')){
+    if ($response = $this->config->get('response')){
         $form['response'] = array(
           '#type' => 'textarea',
           '#title' => $this->t('Response'),
@@ -58,12 +48,12 @@ class TestJobCancel extends FormBase {
     }
 
     // Print prediction error.
-    if ($error = $config->get('error')){
+    if ($error = $this->config->get('error')){
         $form['error'] = array(
           '#type' => 'textarea',
           '#title' => $this->t('Error'),
           '#attributes' => array('readonly' => 'readonly'),
-          '#default_value' => $error,    
+          '#default_value' => json_encode($error, JSON_PRETTY_PRINT),    
           '#rows' => 15,
           '#weight' => 100
         );      
@@ -76,45 +66,23 @@ class TestJobCancel extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-  
-    $config = \Drupal::configFactory()->getEditable('ml_engine.test.job.cancel');
-    $config->delete();
-    $credential = \Drupal::configFactory()->getEditable('ml_engine.test')->get('credential');
-
-    // Set config variables. 
-    $project_name = \Drupal::configFactory()->getEditable('ml_engine.test')->get('project');
-    $job_name = $form_state->getValue('job_name');    
-    $config ->set('job_name', $job_name) ->save();
-    $name = $project_name."/jobs/".$job_name;
     
-    // Set parameters for prediction request.
-    $credential_json = json_decode($credential, true);
+    $this->config->delete();
+    $job = $form_state->getValue('job_name');
+    $this->config ->set('job_name', $job) ->save();
 
-    // Creting client and services.
-    $client = new \Google_Client();
-    $client->setAuthConfig($credential_json);
-    $client->addScope(\Google_Service_CloudMachineLearningEngine::CLOUD_PLATFORM);
-    $service = new \Google_Service_CloudMachineLearningEngine($client);
+    $response = \Drupal::service('ml_engine.job')->cancel($job);
 
-    // Get Job details.
-    try{
-      $response = $service->projects_jobs->cancel($name, new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1CancelJobRequest());
-    }catch (\Google_Service_Exception $ex){
-      $error = json_decode($ex->getMessage(), true)['error'];
-      $message = $error['message'];
-      $code = $error['code'];
-      $config->set('error',$message)->save();
-      drupal_set_message($message,'error');
+
+    if($response['success']){
+      $this->config->set('response','Job Cancelled')->save();
+      drupal_set_message('Job Cancelled Successfully', 'status');
+      return;
+    }else{
+      $this->config->set('error', $response['response'])->save();
+      drupal_set_message($response['response']['message'], 'error');
       return;
     }
-    if ($response){
-      $config->set('response', "Job Cancelled")->save();
-    }else{
-      $config->set('error', (array) $response )->save();
-    }
-    
-
-
   }
-
+    
 }
