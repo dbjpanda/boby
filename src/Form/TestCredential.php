@@ -43,10 +43,10 @@ class TestCredential extends FormBase {
 
     if ($response = $this->config->get('response')){
         $form['response'] = array(
-          '#type' => 'textfield',
+          '#type' => 'textarea',
           '#title' => $this->t('Response'),
           '#attributes' => array('readonly' => 'readonly'),
-          '#default_value' => $response,
+          '#default_value' => 'Succesfully Verified',
           '#weight' => 100,
         );      
     }
@@ -57,9 +57,9 @@ class TestCredential extends FormBase {
           '#type' => 'textarea',
           '#title' => $this->t('Error'),
           '#attributes' => array('readonly' => 'readonly'),
-          '#default_value' => $error,    
+          '#default_value' => json_encode($error, JSON_PRETTY_PRINT),    
           '#rows' => 15,
-          '#weight' => 101,
+          '#weight' => 100
         );      
     }
 
@@ -73,22 +73,23 @@ class TestCredential extends FormBase {
     $this->config->delete();
 
     $form_keys = ['credential', 'name'];
+    $para = [];
     foreach ($form_keys as $key){
-      ${$key} = $form_state->getValue($key);
+      $para[$key]=${$key} = $form_state->getValue($key);
       $this->config->set($key,${$key})->save();
     }
     
     $credential = json_decode($credential,true);
-    $response = \Drupal::service('ml_engine.project')->verify_credential($name, $credential);
+    $para['credential'] = $credential;
+    $status = \Drupal::service('ml_engine.project')->verify_credential($para);
 
-    if($response['success']){
-      $this->config->set('response',(array) $response['response'])->save();
-      drupal_set_message('Succesfully Verified Credential', 'status');
-      return;
+    if($status['success']){
+      drupal_set_message('Successfully verified project '.$name, "status");
+      $response_job = (array) $status['response'];
+      $this->config->set('response', $response_job)->save();
     }else{
-      $this->config->set('error', (array) $response['response'])->save();
-      drupal_set_message($response['response']['message'], 'error');
-      return;
+      drupal_set_message($status['response']['message'], "error");
+      $this->config->set('error', $status['response'])->save();    
     }
 
   }

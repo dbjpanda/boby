@@ -33,9 +33,9 @@ class Project {
     return $this->get_project()->get('name');
   }
 
-  public function verify_credential($project_name, array $credential){
+  public function verify_credential($para){
 
-    $key_difference = array_diff($this->credential_required_keys, array_keys($credential));
+    $key_difference = array_diff($this->credential_required_keys, array_keys($para['credential']));
 
     if ($key_difference){
       $message = t("Credential Keys [ '@keys' ] are missing",array('@keys'=>join("', '",$key_difference)));
@@ -48,7 +48,7 @@ class Project {
     $service = \Drupal::service('ml_engine.cloud_service')->create_service();
 
     try{ 
-        $response = $service->projects->getConfig($project_name);
+        $response = $service->projects->getConfig($para['name']);
         return array('success' => 1,'response' =>$response);
     } catch (\DomainException $ex){
         $error = array('message' => $ex->getMessage());
