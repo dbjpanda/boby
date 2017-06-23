@@ -39,7 +39,7 @@ class ModelController extends ControllerBase {
 
   public function overview() {
     $models_array = $this->get_config()->get('list');
-    $header = [$this->t('Job Name'), $this->t('Regions'), $this->t('Operations')];
+    $header = [$this->t('Model Name'), $this->t('Versions'), $this->t('Regions'), $this->t('Operations')];
     $rows = [];
 
     if(!$models_array){
@@ -48,8 +48,10 @@ class ModelController extends ControllerBase {
 
     foreach ($models_array as $model) {
       $row = [];
+      $versions_link = $this->l('versions', new Url('ml_engine.test.prediction.form'));
       $model_name = explode("models/", $model['name'])[1];
       $row[] = $model_name;
+      $row[] = $versions_link;
       $row[] = implode(",", $model['regions']);
       
       $links['edit'] = [

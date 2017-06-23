@@ -71,16 +71,16 @@ class TestJobCancel extends FormBase {
     $job = $form_state->getValue('job_name');
     $this->config ->set('job_name', $job) ->save();
 
-    $response = \Drupal::service('ml_engine.job')->cancel($job);
+    $status = \Drupal::service('ml_engine.job')->cancel($job);
 
 
-    if($response['success']){
+    if($status['success']){
       $this->config->set('response','Job Cancelled')->save();
       drupal_set_message('Job Cancelled Successfully', 'status');
       return;
     }else{
-      $this->config->set('error', $response['response'])->save();
-      drupal_set_message($response['response']['message'], 'error');
+      $this->config->set('error', $status['response'])->save();
+      drupal_set_message($status['response']['message'], 'error');
       return;
     }
   }

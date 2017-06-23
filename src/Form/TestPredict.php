@@ -76,15 +76,15 @@ class TestPredict extends FormBase {
       $this->config->set($key, ${$key})->save();
     }
     $data_array = ["instances" => json_decode($data,true)];
-    $response = \Drupal::service('ml_engine.predict')->predict($model_name,$data_array);
+    $status = \Drupal::service('ml_engine.predict')->predict($model_name,$data_array);
 
-    if($response['success']){
-      $this->config->set('response',(array) $response['response'])->save();
+    if($status['success']){
+      $this->config->set('response',(array) $status['response'])->save();
       drupal_set_message('Succesfully Got Prediction', 'status');
       return;
     }else{
-      $this->config->set('error', (array) $response['response'])->save();
-      drupal_set_message($response['response']['message'], 'error');
+      $this->config->set('error', (array) $status['response'])->save();
+      drupal_set_message($status['response']['message'], 'error');
       return;
     }
 
