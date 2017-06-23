@@ -151,3 +151,30 @@ ml_engine.test.version.get.form:
     _form: '\Drupal\ml_engine\Form\Version\TestVersionGet'
   requirements:
     _permission: 'administer ml_engine'
+
+ml_engine.test.version.list:
+  path: '/admin/config/media/ml_engine/test/model/{model_name}/versions'
+  defaults:
+    _title: 'ML Engine - Job List'
+    _description: 'Try Job'
+    _controller: '\Drupal\ml_engine\Controller\VersionController::overview'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.version.list.refresh:
+  path: '/admin/config/media/ml_engine/test/model/{model}/versions/refresh'
+  defaults:
+    _title: 'ML Engine - Model List Refresh'
+    _description: 'Refresh Version Overview page to get updated list'
+    _controller: '\Drupal\ml_engine\Controller\VersionController::refresh_overview_page'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.version.delete:
+  path: '/admin/config/media/ml_engine/test/model/{model}/versions/{version}/delete'
+  defaults:
+    _title: 'ML Engine - Model Delete'
+    _description: 'Delete Model'
+    _controller: '\Drupal\ml_engine\Controller\VersionController::deleteList'
+  requirements:
+    _permission: 'administer ml_engine'

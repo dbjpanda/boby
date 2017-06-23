@@ -9,13 +9,14 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-/**
- * Returns responses for aggregator module routes.
- */
 class ModelController extends ControllerBase {
+
+  private $config;
+  private $project;
 
   public function __construct() {
     $this->project = \Drupal::service('ml_engine.project')->get_name();
+    $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.model');
   }
 
   /**
@@ -26,7 +27,7 @@ class ModelController extends ControllerBase {
   }
 
   public function get_config(){
-    return \Drupal::configFactory()->getEditable('ml_engine.test.model');
+    return $this->config;
   }
 
   public function refresh_overview_page() {
@@ -48,8 +49,8 @@ class ModelController extends ControllerBase {
 
     foreach ($models_array as $model) {
       $row = [];
-      $versions_link = $this->l('versions', new Url('ml_engine.test.prediction.form'));
       $model_name = explode("models/", $model['name'])[1];
+      $versions_link = $this->l('versions', new Url('ml_engine.test.version.list', ['model_name' => $model_name]));
       $row[] = $model_name;
       $row[] = $versions_link;
       $row[] = implode(",", $model['regions']);

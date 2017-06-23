@@ -9,12 +9,15 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-/**
- * Returns responses for aggregator module routes.
- */
 class JobController extends ControllerBase {
 
-  public function __construct() {}
+  private $config;
+  private $project;
+
+  public function __construct() {
+    $this->project = \Drupal::service('ml_engine.project')->get_name();
+    $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.job');
+  }
 
   /**
    * {@inheritdoc}
@@ -24,7 +27,7 @@ class JobController extends ControllerBase {
   }
 
   public function get_config(){
-    return \Drupal::configFactory()->getEditable('ml_engine.test.job');
+    return $this->config;
   }
 
   public function refresh_overview_page() {

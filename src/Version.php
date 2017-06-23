@@ -16,35 +16,43 @@ class Version extends MLEngineBase{
 
   public function __construct() {
       parent::__construct();
-      $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.version');
+      $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.model');
   }
 
   public static function create(ContainerInterface $container) {
      return new static();
   }
 
-  public function UpdateModelList() {
+  public function UpdateVersionList($model_name) {
       $service = $this->create_service();
-      $response = $service->projects_models->listProjectsModelsVersions($this->project_name);
-      $models = $response->__get('versions');
+      $parent = $this->project_name.'/models/'.$model_name;
+      try{
+        $response = $service->projects_models_versions->listProjectsModelsVersions($parent);
+      }catch(\Google_Service_Exception $ex){
+        die('Model '.$model_name." not found");
+      }
 
-      $models_array = [];
+      $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.model.'.$model_name);
+
+      $versions = $response->__get('versions');
+
+      $versions_array = [];
       
-      for ($i=0; $i<count($models); $i++){
-          $models_array[$i] = (array) $models[$i];
+      for ($i=0; $i<count($versions); $i++){
+          $versions_array[$i] = (array) $versions[$i];
       }
 
       $this->config->clear('list')->save();
-      $this->config->set('list',$models_array)->save();
-      return $models_array;
+      $this->config->set('list',$versions_array)->save();
+      return $versions_array;
   }
 
-  public function delete($model){
-      $model_full_name = $this->project_name."/models/".$model;
+  public function delete($model, $version){
+      $full_name = $this->project_name."/models/".$model."/versions/".$version;
       $service = $this->create_service();
 
       try{
-        $response = $service->projects_models->delete($model_full_name);
+        $response = $service->projects_models_versions->delete($full_name);
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];
