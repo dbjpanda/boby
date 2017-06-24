@@ -178,3 +178,12 @@ ml_engine.test.version.delete:
     _controller: '\Drupal\ml_engine\Controller\VersionController::deleteList'
   requirements:
     _permission: 'administer ml_engine'
+
+ml_engine.test.automation:
+  path: '/admin/config/media/ml_engine/test/automate/create'
+  defaults:
+    _title: 'ML Engine - Automation'
+    _description: 'Preforms the cycle of traning and deployment'
+    _form: '\Drupal\ml_engine\Form\Automate\Create'
+  requirements:
+    _permission: 'administer ml_engine'

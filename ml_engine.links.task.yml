@@ -67,3 +67,9 @@ ml_engine.test.version.get:
   route_name: ml_engine.test.version.get.form
   parent_id: ml_engine.test.version
   title: 'Get'
+
+
+ml_engine.test.automation:
+  route_name: ml_engine.test.automation
+  base_route: ml_engine.test
+  title: 'Automate'
