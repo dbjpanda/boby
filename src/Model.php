@@ -39,12 +39,15 @@ class Model extends MLEngineBase{
       return $models_array;
   }
 
-  public function delete($model){
-      $model_full_name = $this->project_name."/models/".$model;
+  public function delete($name){
+      $model_full_name = $this->project_name."/models/".$name;
       $service = $this->create_service();
 
       try{
         $response = $service->projects_models->delete($model_full_name);
+        $response = (array) $response;
+        $response['message'] = "Successfully deleted model ". $name;
+
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];
@@ -52,12 +55,15 @@ class Model extends MLEngineBase{
       }
   }
 
-  public function get($model){
-      $model_full_name = $this->project_name."/models/".$model;
+  public function get($name){
+      $model_full_name = $this->project_name."/models/".$name;
       $service = $this->create_service();
 
       try{
         $response = $service->projects_models->get($model_full_name);
+        $response = (array) $response;
+        $response['message'] = "Successfully got model ". $name;
+
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];
@@ -69,7 +75,6 @@ class Model extends MLEngineBase{
       $model = new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1Model();
       $model->setName($para['name']);
       $model->setDescription($para['description']);
-      $model->setName($para['name']);
       $model->setRegions($para['region']);
       return $model;
   }
@@ -80,6 +85,9 @@ class Model extends MLEngineBase{
 
       try{
         $response = $service->projects_models->create($this->project_name,$model);
+        $response = (array) $response;
+        $response['message'] = "Successfully created model ". $para['name'];
+        
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];

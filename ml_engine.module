@@ -1,0 +1,11 @@
+<?php
+
+function ml_engine_cron(){
+	$config = \Drupal::configFactory()->getEditable('ml_engine.test.automate.cron');
+	
+	if($config->get('state')){
+		\Drupal::service('ml_engine.automate')->refresh_cron_list();
+	}
+
+	return;
+}

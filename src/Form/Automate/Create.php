@@ -9,45 +9,52 @@ use Drupal\Core\Form\FormStateInterface;
 
 class Create extends FormBase {
 
+  private $service;
+  private $config;
 
   public function getFormId() {
     return 'ml_engine_automate_create';
   }
 
   public function __construct(){
-    $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.automate.create');
+    $this->service = \Drupal::service('ml_engine.automate');
+    $this->config = $this->service->config;
+  }
+
+  private function getValue($key){
+    return $this->service->getValue($key);
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $form['package_uri'] = array(
+    $form['job_package_uri'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Package URI'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('package_uri'),
+      '#default_value' => $this->getValue('job_package_uri'),
     );
-    $form['module'] = array(
+    $form['job_module'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Module'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('module'),
+      '#default_value' => $this->getValue('job_module'),
     );
-    $form['train_data_uri'] = array(
+    $form['job_train_data_uri'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Train Data URI'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('train_data_uri'),
+      '#default_value' => $this->getValue('job_train_data_uri'),
     );
-    $form['test_data_uri'] = array(
+    $form['job_test_data_uri'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Test Data URI'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('test_data_uri'),
+      '#default_value' => $this->getValue('job_test_data_uri'),
     );
-    $form['verbosity'] = array(
+    $form['job_verbosity'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Verbosity'),
-      '#default_value' => 'DEBUG',
+      '#default_value' => $this->getValue('job_verbosity'),
       '#attributes' => array('readonly' => 'readonly'),
     );
 
@@ -61,13 +68,21 @@ class Create extends FormBase {
     '#title' => t('Job'),
     );
 
-    $form['advanced']['deployment'] = array(
+    $form['advanced']['job'] = array_merge($form['advanced']['job'], $this->job_fields());
+
+    $form['advanced']['model'] = array(
     '#type' => 'details',
-    '#title' => t('Deployment'),
+    '#title' => t('model'),
     );
 
-    $form['advanced']['job'] = array_merge($form['advanced']['job'], $this->job_fields());
-    $form['advanced']['deployment'] = array_merge($form['advanced']['deployment'], $this->deployment_fields());
+    $form['advanced']['model'] = array_merge($form['advanced']['model'], $this->model_fields());
+
+    $form['advanced']['version'] = array(
+    '#type' => 'details',
+    '#title' => t('Version'),
+    );
+
+    $form['advanced']['version'] = array_merge($form['advanced']['version'], $this->version_fields());
 
     $form['actions']['#type'] = 'actions';
     $form['actions']['submit'] = array(
@@ -107,52 +122,53 @@ class Create extends FormBase {
 
     $this->config->delete();
 
-    $keys = array('job','package_uri','module','train_data_uri',
-    'test_data_uri', 'train_steps', 'verbosity','job_dir','region','scale_tier','arguments');
+    $job_keys=array('package_uri','module','train_data_uri','test_data_uri','verbosity','name','train_steps','output_dir','region','scale_tier');
+    $model_keys=array('name', 'description', 'region');
+    $version_keys=array('name', 'default','description','deployment_uri');
 
     $jobPara = [];
     
-    foreach ($keys as $key) {
-      ${$key} = $form_state->getValue($key);
-      $jobPara[$key] = ${$key};
-      $this->config->set($key,${$key})->save();
+    foreach ($job_keys as $key) {
+      $job_key = "job_".$key; 
+      $jobPara[$key] = ${$job_key} = $form_state->getValue($job_key);
+      $this->config->set($job_key,${$job_key})->save();
     }
 
-    $status = \Drupal::service('ml_engine.job')->JobCreate($jobPara);
-
-    if($status['success']){
-      drupal_set_message('Successfully created job '.$job, "status");
-      $response_job = (array) $status['response'];
-      $this->config->set('response', $response_job)->save();
-    }else{
-      drupal_set_message($status['response']['message'], "error");
-      $this->config->set('error', $status['response'])->save();    
+    foreach ($model_keys as $key) {
+      $model_key = "model_".$key; 
+      $modelPara[$key] = ${$model_key} = $form_state->getValue($model_key);
+      $this->config->set($model_key,${$model_key})->save();
     }
+
+    foreach ($version_keys as $key) {
+      $version_key = "version_".$key; 
+      $versionPara[$key] = ${$version_key} = $form_state->getValue($version_key);
+      $this->config->set($version_key,${$version_key})->save();
+    }
+
+    $status = \Drupal::service('ml_engine.automate')->automate($jobPara, $modelPara, $versionPara);
 
   }
 
   private function job_fields(){
 
-    $job['name'] = array(
+    $job['job_name'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Name'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('name'),
+      '#default_value' => $this->getValue('job_name'),
     );
 
-    $job['train_steps'] = array(
+    $job['job_train_steps'] = array(
       '#type' => 'number',
       '#title' => $this->t('Train Steps'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('train_steps'),
+      '#default_value' => $this->getValue('job_train_steps'),
     );
-    $job['job_dir'] = array(
+    $job['job_output_dir'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Output Directory'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('job_dir'),
+      '#default_value' => $this->getValue('job_output_dir'),
     );
-    $job['region'] = array(
+    $job['job_region'] = array(
       '#type' => 'select',
       '#options' => array(
         'us-central1' => t('us-central1'),
@@ -161,11 +177,10 @@ class Create extends FormBase {
         'asia-east1' => t('asia-east1')
       ),
       '#title' => $this->t('Region'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('region'),
+      '#default_value' => $this->getValue('job_region'),
     );
 
-    $job['scale_tier'] = array(
+    $job['job_scale_tier'] = array(
       '#type' => 'select',
       '#options' => array(
         'BASIC' => t('BASIC'),
@@ -174,51 +189,64 @@ class Create extends FormBase {
         'BASIC_GPU' => t('BASIC_GPU')
       ),
       '#title' => $this->t('Scale Tier'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('scale_tier'),
+      '#default_value' => $this->getValue('job_scale_tier'),
     );
 
     return $job;
 
   }
 
-
-  private function deployment_fields(){
+  private function model_fields(){
 
     $form['model_name'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Model Name'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('model_name'),
+      '#default_value' => $this->getValue('model_name'),
     );
 
-    $form['version_name'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Version Name'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('version_name'),
+    $form['model_description'] = array(
+      '#type' => 'textarea',
+      '#title' => $this->t('Model Description'),
+      '#default_value' => $this->getValue('model_description'),
     );
-    $form['deployment_url'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Deployment URL'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('deployment_url'),
-    );
-    $form['region'] = array(
+
+    $form['model_region'] = array(
       '#type' => 'select',
       '#options' => array(
         'us-central1' => t('us-central1'),
-        'us-east1' => t('us-east1'), 
-        'europe-west1' => t('europe-west1'), 
-        'asia-east1' => t('asia-east1')
+        'us-east1' => t('us-east1'),
       ),
       '#title' => $this->t('Region'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('region'),
+      '#default_value' => $this->getValue('model_region'),
+    );
+    return $form;
+  }
+
+  private function version_fields(){
+    $form['version_name'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Name'),
+      '#default_value' => $this->getValue('version_name'),
     );
 
-    return $form;
+    $form['version_default'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Make it default version?'),
+      '#default_value' => $this->getValue('version_default'),
+    );
 
+    $form['version_description'] = array(
+      '#type' => 'textarea',
+      '#title' => $this->t('Description'),
+      '#default_value' => $this->getValue('version_description'),
+    );
+
+    $form['version_deployment_uri'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Deployment URL'),
+      '#default_value' => $this->getValue('version_deployment_uri'),
+    );
+    return $form;
   }
 
 }

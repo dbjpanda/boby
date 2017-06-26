@@ -47,12 +47,15 @@ class Version extends MLEngineBase{
       return $versions_array;
   }
 
-  public function delete($model, $version){
-      $full_name = $this->project_name."/models/".$model."/versions/".$version;
+  public function delete($model, $name){
+      $version_full_name = $this->project_name."/models/".$model."/versions/".$name;
       $service = $this->create_service();
 
       try{
-        $response = $service->projects_models_versions->delete($full_name);
+        $response = $service->projects_models_versions->delete($version_full_name);
+        $response = (array) $response;
+        $response['message'] = "Successfully deleted version ". $name. " of model ". $model;
+        
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];
@@ -60,12 +63,15 @@ class Version extends MLEngineBase{
       }
   }
 
-  public function get($para){
-      $version_full_name = $this->project_name."/models/".$para['model_name']."/versions/".$para['name'];
+  public function get($model, $name){
+      $version_full_name = $this->project_name."/models/".$model."/versions/".$name;
       $service = $this->create_service();
 
       try{
         $response = $service->projects_models_versions->get($version_full_name);
+        $response = (array) $response;
+        $response['message'] = "Successfully got version ".$name." of model ".$model;
+
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];
@@ -74,19 +80,23 @@ class Version extends MLEngineBase{
   }
 
   private function createVersionObject(array $para){
-      $model = new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1Version();
-      $model->setName($para['name']);
-      $model->setDescription($para['description']);
-      $model->setDeploymentUri($para['deployment_uri']);
-      return $model;
+      $version = new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1Version();
+      $version->setName($para['name']);
+      $version->setDescription($para['description']);
+      $version->setDeploymentUri($para['deployment_uri']);
+      //$version->setIsDefault((bool)$para['default']);
+      return $version;
   }
 
   public function VersionCreate(array $para){
       $version = $this->createVersionObject($para);
       $service = $this->create_service();
-      $model_full_name = $this->project_name."/models/".$para['model_name'];
+      $parent = $this->project_name."/models/".$para['model_name'];
       try{
-        $response = $service->projects_models_versions->create($model_full_name,$version);
+        $response = $service->projects_models_versions->create($parent, $version);
+        $response = (array) $response;
+        $response['message'] = "Successfully created version ". $para['name'];
+        
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];

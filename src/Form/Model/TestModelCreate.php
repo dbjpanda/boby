@@ -27,13 +27,6 @@ class TestModelCreate extends FormBase {
       '#default_value' => $this->config->get('name'),
     );
 
-    $form['default_version'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Default Version'),
-      '#required' => TRUE,
-      '#default_value' => $this->config->get('default_version'),
-    );
-
     $form['description'] = array(
       '#type' => 'textarea',
       '#title' => $this->t('Description'),
@@ -91,7 +84,7 @@ class TestModelCreate extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
     $this->config->delete();
-    $keys = array('name', 'description', 'default_version', 'region');
+    $keys = array('name', 'description', 'region');
     $para = [];
     foreach ($keys as $key) {
       ${$key} = $form_state->getValue($key);
@@ -100,16 +93,10 @@ class TestModelCreate extends FormBase {
     }
 
     $status = \Drupal::service('ml_engine.model')->ModelCreate($para);
-
-    if($status['success']){
-      drupal_set_message('Successfully created model '.$name, "status");
-      $response_job = (array) $status['response'];
-      $this->config->set('response', $response_job)->save();
-    }else{
-      drupal_set_message($status['response']['message'], "error");
-      $this->config->set('error', $status['response'])->save();    
-    }
-
+    $emotion = ($status['success'] ? "status" : "error");
+    
+    drupal_set_message($status['response']['message'], $emotion);
+    $this->config->set('response', $status['response'])->save(); 
   }
 
 }

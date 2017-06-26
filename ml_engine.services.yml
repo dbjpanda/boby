@@ -1,4 +1,8 @@
 services:
+  ml_engine.automate:
+    class: Drupal\ml_engine\Automate
+    arguments: []
+
   ml_engine.model:
     class: Drupal\ml_engine\Model
     arguments: []

@@ -179,11 +179,38 @@ ml_engine.test.version.delete:
   requirements:
     _permission: 'administer ml_engine'
 
-ml_engine.test.automation:
+ml_engine.test.automate.create:
   path: '/admin/config/media/ml_engine/test/automate/create'
   defaults:
     _title: 'ML Engine - Automation'
     _description: 'Preforms the cycle of traning and deployment'
     _form: '\Drupal\ml_engine\Form\Automate\Create'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.automate.status:
+  path: '/admin/config/media/ml_engine/test/automate/status'
+  defaults:
+    _title: 'ML Engine - Automation Status'
+    _description: 'Get status of the cycle of traning and deployment'
+    _controller: '\Drupal\ml_engine\Controller\AutomateController::overview'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.automate.new:
+  path: '/admin/config/media/ml_engine/test/automate/new'
+  defaults:
+    _title: 'New task'
+    _description: 'Delete all the variables of old automated task.'
+    _controller: '\Drupal\ml_engine\Controller\AutomateController::new_task'
+  requirements:
+    _permission: 'administer ml_engine'
+
+ml_engine.test.automate.update:
+  path: '/admin/config/media/ml_engine/test/automate/update'
+  defaults:
+    _title: 'Update'
+    _description: 'Update the status of the automated task.'
+    _controller: '\Drupal\ml_engine\Controller\AutomateController::update_task'
   requirements:
     _permission: 'administer ml_engine'

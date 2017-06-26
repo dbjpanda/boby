@@ -40,7 +40,7 @@ class TestJobCancel extends FormBase {
           '#type' => 'textarea',
           '#title' => $this->t('Response'),
           '#attributes' => array('readonly' => 'readonly'),
-          '#default_value' => $response,    
+          '#default_value' => json_encode($response, JSON_PRETTY_PRINT),    
           '#rows' => 15,
           '#weight' => 100,
           
@@ -72,17 +72,10 @@ class TestJobCancel extends FormBase {
     $this->config ->set('job_name', $job) ->save();
 
     $status = \Drupal::service('ml_engine.job')->cancel($job);
-
-
-    if($status['success']){
-      $this->config->set('response','Job Cancelled')->save();
-      drupal_set_message('Job Cancelled Successfully', 'status');
-      return;
-    }else{
-      $this->config->set('error', $status['response'])->save();
-      drupal_set_message($status['response']['message'], 'error');
-      return;
-    }
+    $emotion = ($status['success'] ? "status" : "error");
+    
+    drupal_set_message($status['response']['message'], $emotion);
+    $this->config->set('response', $status['response'])->save(); 
   }
     
 }

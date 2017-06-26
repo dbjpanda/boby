@@ -20,11 +20,11 @@ class TestJobCreate extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $form['job'] = array(
+    $form['name'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Job Name'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('job'),
+      '#default_value' => $this->config->get('name'),
     );
     $form['package_uri'] = array(
       '#type' => 'textfield',
@@ -59,11 +59,11 @@ class TestJobCreate extends FormBase {
       '#title' => $this->t('Verbosity'),
       '#default_value' => $this->config->get('verbosity'),
     );
-    $form['job_dir'] = array(
+    $form['output_dir'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Output Directory'),
       '#required' => TRUE,
-      '#default_value' => $this->config->get('job_dir'),
+      '#default_value' => $this->config->get('output_dir'),
     );
     $form['region'] = array(
       '#type' => 'select',
@@ -134,8 +134,8 @@ class TestJobCreate extends FormBase {
 
     $this->config->delete();
 
-    $keys = array('job','package_uri','module','train_data_uri',
-    'test_data_uri', 'train_steps', 'verbosity','job_dir','region','scale_tier','arguments');
+    $keys = array('name','package_uri','module','train_data_uri',
+    'test_data_uri', 'train_steps', 'verbosity','output_dir','region','scale_tier','arguments');
 
     $jobPara = [];
     
@@ -146,15 +146,10 @@ class TestJobCreate extends FormBase {
     }
 
     $status = \Drupal::service('ml_engine.job')->JobCreate($jobPara);
-
-    if($status['success']){
-      drupal_set_message('Successfully created job '.$job, "status");
-      $response_job = (array) $status['response'];
-      $this->config->set('response', $response_job)->save();
-    }else{
-      drupal_set_message($status['response']['message'], "error");
-      $this->config->set('error', $status['response'])->save();    
-    }
+    $emotion = ($status['success'] ? "status" : "error");
+    
+    drupal_set_message($status['response']['message'], $emotion);
+    $this->config->set('response', $status['response'])->save(); 
 
   }
 

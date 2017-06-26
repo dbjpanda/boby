@@ -15,10 +15,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class MLEngineBase {
 
   public $project_name;
+  public $bucket;
 
   public function __construct() {
     $project = \Drupal::service('ml_engine.project');
     $this->project_name = $project->get_name();
+    $this->bucket = $project->get_bucket();
   }
 
   public static function create(ContainerInterface $container) {

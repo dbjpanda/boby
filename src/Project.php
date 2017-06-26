@@ -33,6 +33,10 @@ class Project {
     return $this->get_project()->get('name');
   }
 
+  public function get_bucket(){
+    return   'gs://drupal-ml';
+  }
+
   public function verify_credential($para){
 
     $key_difference = array_diff($this->credential_required_keys, array_keys($para['credential']));

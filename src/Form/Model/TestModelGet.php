@@ -69,14 +69,10 @@ class TestModelGet extends FormBase {
     $this->config ->set('name', $name) ->save();
     
     $status = \Drupal::service('ml_engine.model')->get($name);
-    if($status['success']){
-      drupal_set_message('Successfully got job '.$name, "status");
-      $response_job = (array) $status['response'];
-      $this->config->set('response', $response_job)->save();
-    }else{
-      drupal_set_message($status['response']['message'], "error");
-      $this->config->set('error', $status['response'])->save();    
-    }
+    $emotion = ($status['success'] ? "status" : "error");
+    
+    drupal_set_message($status['response']['message'], $emotion);
+    $this->config->set('response', $status['response'])->save(); 
   }
 
 }

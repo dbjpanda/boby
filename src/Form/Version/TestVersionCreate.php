@@ -34,6 +34,12 @@ class TestVersionCreate extends FormBase {
       '#default_value' => $this->config->get('model_name'),
     );
 
+    $form['default'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Make it default version?'),
+      '#default_value' => $this->config->get('default'),
+    );
+
     $form['description'] = array(
       '#type' => 'textarea',
       '#title' => $this->t('Description'),
@@ -87,7 +93,7 @@ class TestVersionCreate extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
     $this->config->delete();
-    $keys = array('name', 'model_name', 'description', 'deployment_uri');
+    $keys = array('name', 'model_name', 'description', 'deployment_uri', 'default');
     $para = [];
     foreach ($keys as $key) {
       ${$key} = $form_state->getValue($key);
@@ -96,15 +102,11 @@ class TestVersionCreate extends FormBase {
     }
 
     $status = \Drupal::service('ml_engine.version')->VersionCreate($para);
-
-    if($status['success']){
-      drupal_set_message('Successfully created model '.$name, "status");
-      $response_job = (array) $status['response'];
-      $this->config->set('response', $response_job)->save();
-    }else{
-      drupal_set_message($status['response']['message'], "error");
-      $this->config->set('error', $status['response'])->save();    
-    }
+    $emotion = ($status['success'] ? "status" : "error");
+    
+    drupal_set_message($status['response']['message'], $emotion);
+    $this->config->set('response', $status['response'])->save();    
+    
 
   }
 

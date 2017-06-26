@@ -54,11 +54,8 @@ class JobController extends ControllerBase {
       $row[] = $job['createTime'];
       $row[] = $job['endTime'];
       $links = [];
-
-      // There are eight training states, refer to
-      // https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#State
       
-      $training_states = array('QUEUED','PREPARING','RUNNING');
+      $training_states = \Drupal::service('ml_engine.job')->states['on_going'];
       
       if(in_array($job['state'],$training_states)){
         $links['edit'] = [

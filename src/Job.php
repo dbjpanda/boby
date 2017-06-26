@@ -13,10 +13,20 @@ use Drupal\ml_engine\MLEngineBase;
 class Job extends MLEngineBase{
 
   public $config;
+  public $states;
 
   public function __construct() {
       parent::__construct();
       $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.job');
+      
+      // There are eight training states, refer to
+      // https://cloud.google.com/ml-engine/reference/rest/v1/projects.jobs#State
+      
+      $this->states = array(
+          "success" => array('SUCCEEDED'),
+          "failure" => array('FAILED', 'CANCELLED','CANCELLING','STATE_UNSPECIFIED'),
+          "on_going" => array('QUEUED','PREPARING','RUNNING'),
+        );
   }
 
   public static function create(ContainerInterface $container) {
@@ -39,12 +49,15 @@ class Job extends MLEngineBase{
       return $jobs_array;
   }
 
-  public function cancel($job){
-      $job_full_name = $this->project_name."/jobs/".$job;
+  public function cancel($name){
+      $job_full_name = $this->project_name."/jobs/".$name;
       $service = $this->create_service();
 
       try{
         $response = $service->projects_jobs->cancel($job_full_name, new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1CancelJobRequest());
+        $response = (array) $response;
+        $response['message'] = "Successfully cancelled job ". $name;
+        
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];
@@ -52,12 +65,15 @@ class Job extends MLEngineBase{
       }
   }
 
-  public function get($job){
-      $job_full_name = $this->project_name."/jobs/".$job;
+  public function get($name){
+      $job_full_name = $this->project_name."/jobs/".$name;
       $service = $this->create_service();
 
       try{
         $response = $service->projects_jobs->get($job_full_name);
+        $response = (array) $response;
+        $response['message'] = "Successfully got job details". $name;
+
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];
@@ -69,8 +85,8 @@ class Job extends MLEngineBase{
       foreach (array_keys($para) as $key) {
         ${$key} = $para[$key];
       }
-      $arguments_array = ['--train--files', $train_data_uri, '--eval-files', $test_data_uri,
-                          '--train-steps', $train_steps, 'verbosity', $verbosity];
+      $arguments_array = ['--train-files', $train_data_uri, '--eval-files', $test_data_uri,
+                          '--train-steps', $train_steps, '--verbosity', $verbosity];
       $package_array = array($package_uri);
       $input = new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1TrainingInput();
       
@@ -78,7 +94,7 @@ class Job extends MLEngineBase{
       $input->setPackageUris($package_array);
       $input->setPythonModule($module);
       $input->setRegion($region);
-      $input->setJobDir($job_dir);
+      $input->setJobDir($output_dir);
       $input->setArgs($arguments_array);
       
       return $input;
@@ -88,7 +104,7 @@ class Job extends MLEngineBase{
       $input = $this->createInputObject($para);
       
       $job = new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1Job();
-      $job->setJobId($para['job']);
+      $job->setJobId($para['name']);
       $job->setTrainingInput($input);
 
       return $job;
@@ -100,6 +116,9 @@ class Job extends MLEngineBase{
 
       try{
         $response = $service->projects_jobs->create($this->project_name,$job);
+        $response = (array) $response;
+        $response['message'] = "Successfully created job.". $para['name'];
+
         return array( "success" => 1, "response" => $response );
       }catch (\Google_Service_Exception $ex){
         $error = json_decode($ex->getMessage(), true)['error'];

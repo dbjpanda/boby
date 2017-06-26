@@ -9,3 +9,21 @@ ml_engine.model_refresh:
   title: 'Refresh'
   appears_on:
     - 'ml_engine.test.model.list'
+
+ml_engine.automate_new:
+  route_name: ml_engine.test.automate.new
+  title: 'New'
+  appears_on:
+    - 'ml_engine.test.automate.create'
+
+ml_engine.automate_update:
+  route_name: ml_engine.test.automate.update
+  title: 'Cron Update'
+  appears_on:
+    - 'ml_engine.test.automate.status'
+
+ml_engine.automate_status_refresh:
+  route_name: ml_engine.test.automate.status
+  title: 'Refresh'
+  appears_on:
+    - 'ml_engine.test.automate.status'

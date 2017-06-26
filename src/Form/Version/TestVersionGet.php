@@ -78,18 +78,13 @@ class TestVersionGet extends FormBase {
     foreach($required_keys as $key){
       ${$key} = $form_state->getValue($key); 
       $this->config ->set($key, ${$key}) ->save();
-      $para[$key] = ${$key};
     }
     
-    $status = \Drupal::service('ml_engine.version')->get($para);
-    if($status['success']){
-      drupal_set_message('Successfully got job '.$name, "status");
-      $response_job = (array) $status['response'];
-      $this->config->set('response', $response_job)->save();
-    }else{
-      drupal_set_message($status['response']['message'], "error");
-      $this->config->set('error', $status['response'])->save();    
-    }
+    $status = \Drupal::service('ml_engine.version')->get($model_name, $name);
+    $emotion = ($status['success'] ? "status" : "error");
+    
+    drupal_set_message($status['response']['message'], $emotion);
+    $this->config->set('response', $status['response'])->save();
   }
 
 }
