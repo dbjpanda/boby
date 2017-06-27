@@ -12,11 +12,15 @@ use Drupal\ml_engine\MLEngineBase;
 
 class Storage extends MLEngineBase{
 
-  public $config;
-  public $states;
+  public $bucket_name;
+  public $bucket_repo_name;
+  private $time;
 
   public function __construct() {
       parent::__construct();
+      $this->bucket_name = \Drupal::service('ml_engine.project')->get_bucket();
+      $this->bucket_repo_name = \Drupal::service('ml_engine.project')->get_bucket_repo();
+      $this->time = time();
   }
 
   public static function create(ContainerInterface $container) {
@@ -34,23 +38,44 @@ class Storage extends MLEngineBase{
 
   public function create_bucket(){
     $client = $this->create_storage_client();
-    $bucket_name = \Drupal::service('ml_engine.project')->get_bucket();
-    $bucket = $client->createBucket($bucket_name);
+    $bucket = $client->bucket($this->bucket);
     return $bucket;
   }
 
   public function upload($file, $upload_name){
     $bucket = $this->create_bucket();
-    
+
     $options = [
          'metadata' => [
-             'contentLanguage' => 'en',
-             'name' => $upload_name,
-         ]
+             'contentLanguage' => 'en'
+         ],    
+         'name' => $upload_name,
+         
      ];
     
-    $response = $bucket->upload($file,$options);
-    return $response;
+     try{
+        $response = $bucket->upload($file,$options);
+        $response = array('message' => "Successfully uploaded file as ".$upload_name);
+        
+        return array("success" => 1, "response" => $response, "file_path" => "gs://".$this->bucket_name."/".$upload_name);
+     }
+     catch(\Google\Cloud\Core\Exception\NotFoundException $ex){
+        $error = array("message"=>"Upload Not Found Exception error"); //json_decode($ex->getMessage(), true)['error'];
+        return array( "success" => 0, "response" => $error);
+     }
+     catch(\Google\Cloud\Core\Exception\ServiceException $ex){
+        $error = array("message"=>"Upload Service Exception error"); //json_decode($ex->getMessage(), true)['error'];
+        return array( "success" => 0, "response" => $error);
+     }
+
+  }
+
+  public function upload_from_file_path($path,$name){
+    $file_name_split = explode('/', $path);
+    $file_name = end($file_name_split);
+    $upload_name = $this->bucket_repo_name.'/'.$name;
+
+    return $this->upload(fopen($path,'r'), $upload_name);
   }
 
 }

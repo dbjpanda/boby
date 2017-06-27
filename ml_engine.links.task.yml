@@ -82,3 +82,8 @@ ml_engine.test.automate.status:
   route_name: ml_engine.test.automate.status
   parent_id: ml_engine.test.automate
   title: 'Status'
+
+ml_engine.test.storage:
+  route_name: ml_engine.test.storage.upload.form
+  base_route: ml_engine.test
+  title: 'Storage'

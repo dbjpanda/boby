@@ -34,7 +34,11 @@ class Project {
   }
 
   public function get_bucket(){
-    return   'drupal-ml';
+    return 'drupal-ml';
+  }
+
+  public function get_bucket_repo(){
+    return 'drupal-ml-repo';
   }
 
   public function verify_credential($para){

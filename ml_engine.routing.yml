@@ -214,3 +214,12 @@ ml_engine.test.automate.update:
     _controller: '\Drupal\ml_engine\Controller\AutomateController::update_task'
   requirements:
     _permission: 'administer ml_engine'
+
+ml_engine.test.storage.upload.form:
+  path: '/admin/config/media/ml_engine/test/storage/upload'
+  defaults:
+    _title: 'ML Engine - Storage Upload'
+    _description: 'Create Model'
+    _form: '\Drupal\ml_engine\Form\Storage\TestStorageUpload'
+  requirements:
+    _permission: 'administer ml_engine'
