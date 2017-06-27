@@ -34,7 +34,7 @@ class Project {
   }
 
   public function get_bucket(){
-    return   'gs://drupal-ml';
+    return   'drupal-ml';
   }
 
   public function verify_credential($para){

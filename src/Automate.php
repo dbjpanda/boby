@@ -166,7 +166,7 @@ class Automate extends MLEngineBase{
           'job_verbosity' => 'DEBUG',
           'job_name' => 'drupal_job_'.$this->time,
           'job_train_steps' => 1000,
-          'job_output_dir' => $this->bucket.'/drupal_out/'.$this->time,
+          'job_output_dir' => "gs://".$this->bucket.'/drupal_out/'.$this->time,
           'job_region' => 'us-east1',
           'job_scale_tier' => 'BASIC',
       );

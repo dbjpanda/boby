@@ -15,12 +15,16 @@ services:
     class: Drupal\ml_engine\Version
     arguments: []
 
+  ml_engine.storage:
+    class: Drupal\ml_engine\Storage
+    arguments: []
+
   ml_engine.project:
-    class: Drupal\ml_engine\project
+    class: Drupal\ml_engine\Project
     arguments: []
 
   ml_engine.predict:
-    class: Drupal\ml_engine\predict
+    class: Drupal\ml_engine\Predict
     arguments: []
 
   ml_engine.cloud_service:
