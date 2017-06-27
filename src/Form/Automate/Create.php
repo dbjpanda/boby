@@ -19,6 +19,7 @@ class Create extends FormBase {
   public function __construct(){
     $this->service = \Drupal::service('ml_engine.automate');
     $this->config = $this->service->config;
+    //$this->config = $this->service->config;
   }
 
   private function getValue($key){
@@ -28,10 +29,10 @@ class Create extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
 
     $form['job_package_uri'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Package URI'),
-      '#required' => TRUE,
-      '#default_value' => $this->getValue('job_package_uri'),
+      '#type' => 'file',
+      '#title' => $this->t('Package'),
+      '#description' => t('Upload tensorflow file as python package. We except .gz file')
+      //'#default_value' => $this->getValue('job_package_uri'),
     );
     $form['job_module'] = array(
       '#type' => 'textfield',
@@ -146,6 +147,22 @@ class Create extends FormBase {
       $this->config->set($version_key,${$version_key})->save();
     }
 
+    if ($trainer_file = file_save_upload('job_package_uri',array('file_validate_extensions' => array('gz')), FALSE, 0)) {
+      $trainer_uri = $trainer_file->getFileUri();
+      $trainer_path = drupal_realpath($trainer_uri);
+    }else{
+      drupal_set_message('Select trainer file of format .gz');
+      return;
+    }
+
+    $trainer_upload_status = \Drupal::service('ml_engine.storage')->upload_from_file_path($trainer_path, 'trainer.tar.gz');
+    if(!$trainer_upload_status['success']) {
+      drupal_set_message($trainer_upload_status['response']['message']);
+      return;
+    }
+
+    $jobPara['package_uri'] = $trainer_upload_status['file_path'];
+
     $status = \Drupal::service('ml_engine.automate')->automate($jobPara, $modelPara, $versionPara);
 
   }
@@ -248,5 +265,7 @@ class Create extends FormBase {
     );
     return $form;
   }
+
+
 
 }

@@ -20,11 +20,8 @@ class TestStorageUpload extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
 
     $form['upload1'] = array(
-      '#type' => 'managed_file',
+      '#type' => 'file',
       '#title' => t('Image'),
-      '#upload_location' => 'public://ml_engine_images/',
-      '#upload_validators'  => array('file_validate_extensions' => array('png')),
-      //'#required' => TRUE,
       '#description' => t('Upload a file'),
     );
 
@@ -52,22 +49,20 @@ class TestStorageUpload extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     
-    $path = $this->get_file_absolute_path($form, 'upload1');
-    $status = \Drupal::service('ml_engine.storage')->upload_from_file_path($path, 'image.png');
+   if ($file = file_save_upload('upload1',array('file_validate_extensions' => array('csv gz')), FALSE, 0)) {
+      $uri = $file->getFileUri();
+      $path = drupal_realpath($uri);
+    }else{
+      drupal_set_message('Select file of formats csv or gz');
+      return;
+    }
+
+    $status = \Drupal::service('ml_engine.storage')->upload_from_file_path($path, 'trainer.tar.gz');
 
     $emotion = ($status['success'] ? "status" : "error");
     
     drupal_set_message($status['response']['message'], $emotion);
     $this->config->set('response', $status['response'])->save();
-  }
-
-  public function get_file_absolute_path($form, $fid){
-    
-    $value = $form[$fid]['#value']['fids'][0];
-    $file = \Drupal::entityManager()->getStorage('file')->load($value);  
-    $uri = $file->getFileUri();    
-    $path = drupal_realpath($uri);
-    return $path;
   }
 
 }

@@ -70,10 +70,14 @@ class Storage extends MLEngineBase{
 
   }
 
-  public function upload_from_file_path($path,$name){
-    $file_name_split = explode('/', $path);
-    $file_name = end($file_name_split);
-    $upload_name = $this->bucket_repo_name.'/'.$name;
+  public function upload_from_file_path($path,$file_name=""){
+    
+    if(!$file_name){
+      $file_name_split = explode('/', $path);
+      $file_name = end($file_name_split);      
+    }
+  
+    $upload_name = $this->bucket_repo_name.'/'.$file_name;
 
     return $this->upload(fopen($path,'r'), $upload_name);
   }
