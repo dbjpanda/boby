@@ -31,6 +31,8 @@ class AutomateController extends ControllerBase {
   public function new_task(){
     \Drupal::configFactory()->getEditable('ml_engine.test.automate.create')->delete();
     \Drupal::configFactory()->getEditable('ml_engine.test.automate.cron')->delete();
+    \Drupal::configFactory()->getEditable('ml_engine.test.automate.cron')->set('state', 1)->save();
+    \Drupal::configFactory()->getEditable('ml_engine.test.automate.cron')->set('run', 0)->save();
     $url = new RedirectResponse('create');
     $url->send();
   }

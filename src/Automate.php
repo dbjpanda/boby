@@ -39,7 +39,7 @@ class Automate extends MLEngineBase{
 
   public function automate($job, $model, $version){
       
-      $this->cron->set('state',1)->save();
+      $this->cron->set('run',1)->save();
       $this->cron->set('job', $job)->save();
       $this->cron->set('model', $model)->save();
       $this->cron->set('version', $version)->save();
@@ -53,8 +53,8 @@ class Automate extends MLEngineBase{
     return;
   }
 
-  private function reset_state(){
-    $this->cron->set('state', 0)->save();
+  private function stop_run(){
+    $this->cron->set('run', 0)->save();
   }
 
   private function add_state(){
@@ -79,12 +79,16 @@ class Automate extends MLEngineBase{
         $this->add_state();
         $this->refresh_cron_list();
     }else{
-      $this->reset_state();      
+      $this->stop_run();      
     }
 
   }
 
   public function refresh_cron_list() {
+
+    if(!$this->cron->get('run')){
+      return;
+    }
     
     $job_service = \Drupal::service('ml_engine.job');
     $model_service = \Drupal::service('ml_engine.model');
@@ -128,7 +132,7 @@ class Automate extends MLEngineBase{
             $this->add_to_state_list($record);
 
             if(in_array($response['state'], $job_service->states['failure'])){
-              $this->reset_state();
+              $this->stop_run();
               return;
             }
 
@@ -142,13 +146,13 @@ class Automate extends MLEngineBase{
         } else{
             $record = ['Job', $response['jobId'], $response['message']];
             $this->add_to_state_list($record);
-            $this->reset_state();
+            $this->stop_run();
         }
 
         return;
     }
 
-    $this->reset_state();
+    $this->stop_run();
     return;
 
   }

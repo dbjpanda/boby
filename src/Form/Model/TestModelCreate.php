@@ -54,25 +54,13 @@ class TestModelCreate extends FormBase {
       '#button_type' => 'primary',
     );
 
-    // Print prediction response.
+    // Print model response.
     if ($response = $this->config->get('response')){
         $form['response'] = array(
           '#type' => 'textarea',
           '#title' => $this->t('Response'),
           '#attributes' => array('readonly' => 'readonly'),
           '#default_value' => json_encode($response,JSON_PRETTY_PRINT),    
-          '#rows' => 15,
-          '#weight' => 100
-        );      
-    }
-
-    // Print prediction error.
-    if ($error = $this->config->get('error')){
-        $form['error'] = array(
-          '#type' => 'textarea',
-          '#title' => $this->t('Error'),
-          '#attributes' => array('readonly' => 'readonly'),
-          '#default_value' => json_encode($error,JSON_PRETTY_PRINT),    
           '#rows' => 15,
           '#weight' => 100
         );      
