@@ -82,4 +82,17 @@ class Storage extends MLEngineBase{
     return $this->upload(fopen($path,'r'), $upload_name);
   }
 
+  public function get_objects($name=''){
+    $bucket = $this->create_bucket();
+    
+    $para = $name ? array('prefix' => $name) : array();
+    
+    $objects = $bucket->objects($para);
+    
+    foreach ($objects as $object) {
+        echo $object->name();
+        echo "<br>";
+    }
+  }
+
 }

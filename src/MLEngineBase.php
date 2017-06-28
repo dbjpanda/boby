@@ -21,6 +21,7 @@ class MLEngineBase {
     $project = \Drupal::service('ml_engine.project');
     $this->project_name = $project->get_name();
     $this->bucket = $project->get_bucket();
+    $this->bucket_repo = $project->get_bucket_repo();
   }
 
   public static function create(ContainerInterface $container) {

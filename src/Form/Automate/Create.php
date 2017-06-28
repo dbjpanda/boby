@@ -41,16 +41,18 @@ class Create extends FormBase {
       '#default_value' => $this->getValue('job_module'),
     );
     $form['job_train_data_uri'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Train Data URI'),
-      '#required' => TRUE,
-      '#default_value' => $this->getValue('job_train_data_uri'),
+      '#type' => 'file',
+      '#title' => $this->t('Training Data'),
+      '#description' => t('Upload training data as csv file')
+      //'#required' => TRUE,
+      //'#default_value' => $this->getValue('job_train_data_uri'),
     );
     $form['job_test_data_uri'] = array(
-      '#type' => 'textfield',
+      '#type' => 'file',
       '#title' => $this->t('Test Data URI'),
-      '#required' => TRUE,
-      '#default_value' => $this->getValue('job_test_data_uri'),
+      '#description' => t('Upload testing data as csv file')
+      //'#required' => TRUE,
+      //'#default_value' => $this->getValue('job_test_data_uri'),
     );
     $form['job_verbosity'] = array(
       '#type' => 'textfield',
@@ -147,21 +149,40 @@ class Create extends FormBase {
       $this->config->set($version_key,${$version_key})->save();
     }
 
-    if ($trainer_file = file_save_upload('job_package_uri',array('file_validate_extensions' => array('gz')), FALSE, 0)) {
-      $trainer_uri = $trainer_file->getFileUri();
-      $trainer_path = drupal_realpath($trainer_uri);
-    }else{
-      drupal_set_message('Select trainer file of format .gz');
-      return;
-    }
+    $file_uploads = array(
+        "package_uri" => array(
+            'file_display_name' => 'trainer code',
+            'extensions' => 'gz',
+            'file_upload_name' => 'trainer.tar.gz'
+          ),
+        'train_data_uri' => array(
+          'file_display_name' => 'training data',
+          'extensions' => 'csv',
+          'file_upload_name' => 'data.csv',
+          ),
+        'test_data_uri' => array(
+            'file_display_name' => 'testing data',
+            'extensions' => 'csv',
+            'file_upload_name' => 'test.csv',
+          )
+      );
 
-    $trainer_upload_status = \Drupal::service('ml_engine.storage')->upload_from_file_path($trainer_path, 'trainer.tar.gz');
-    if(!$trainer_upload_status['success']) {
-      drupal_set_message($trainer_upload_status['response']['message']);
-      return;
-    }
+    foreach ($file_uploads as $field_name => $details) {
 
-    $jobPara['package_uri'] = $trainer_upload_status['file_path'];
+        $local_response = $this->local_file_upload('job_'.$field_name, $details);
+        $emotion = $local_response['success'] ? 'status' : 'error';
+        drupal_set_message($local_response['message'], $emotion);
+        
+        if(!$local_response['success']){ return; }
+        
+        $cloud_response = \Drupal::service('ml_engine.storage')->upload_from_file_path($local_response['path'], $details['file_upload_name']);
+        $emotion = $cloud_response['success'] ? 'status' : 'error';
+        drupal_set_message($cloud_response['response']['message'], $emotion);
+        
+        if(!$cloud_response['success']){ return; }
+
+        $jobPara[$field_name] = $cloud_response['file_path'];
+    }
 
     $status = \Drupal::service('ml_engine.automate')->automate($jobPara, $modelPara, $versionPara);
 
@@ -264,6 +285,16 @@ class Create extends FormBase {
       '#default_value' => $this->getValue('version_deployment_uri'),
     );
     return $form;
+  }
+
+  private function local_file_upload($field_name, $details){
+    if($file = file_save_upload($field_name, array('file_validate_extensions' => array($details['extensions'])), FALSE, 0)) {
+        $uri = $file->getFileUri();
+        $path = drupal_realpath($uri);
+        return array( 'success' => 1, 'path' => $path, 'message' => 'Drupal server upload of '.$details['file_display_name']. ' success');
+      }else{
+        return array( 'success' => 0, 'message' => 'Drupal server upload of '.$details['file_display_name']. ' failed');
+      }
   }
 
 

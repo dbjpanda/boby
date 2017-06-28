@@ -87,3 +87,8 @@ ml_engine.test.storage:
   route_name: ml_engine.test.storage.upload.form
   base_route: ml_engine.test
   title: 'Storage'
+
+ml_engine.test.view:
+  route_name: ml_engine.test.view
+  base_route: ml_engine.test
+  title: 'View'

@@ -223,3 +223,12 @@ ml_engine.test.storage.upload.form:
     _form: '\Drupal\ml_engine\Form\Storage\TestStorageUpload'
   requirements:
     _permission: 'administer ml_engine'
+
+ml_engine.test.view:
+  path: '/admin/config/media/ml_engine/test/view'
+  defaults:
+    _title: 'ML Engine - View'
+    _description: 'View'
+    _form: '\Drupal\ml_engine\Form\View\TestView'
+  requirements:
+    _permission: 'administer ml_engine'

@@ -19,6 +19,9 @@ class TestStorageUpload extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
+    \Drupal::service('ml_engine.storage')->get_objects('drupal-ml-repo');
+    die();
+
     $form['upload1'] = array(
       '#type' => 'file',
       '#title' => t('Image'),

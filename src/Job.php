@@ -94,7 +94,7 @@ class Job extends MLEngineBase{
       $input->setPackageUris($package_array);
       $input->setPythonModule($module);
       $input->setRegion($region);
-      $input->setJobDir($output_dir);
+      $input->setJobDir("gs://".$this->bucket.'/'.$this->bucket_repo.'/'.$output_dir);
       $input->setArgs($arguments_array);
       
       return $input;
