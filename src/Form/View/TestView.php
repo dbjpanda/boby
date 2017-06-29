@@ -20,7 +20,20 @@ class TestView extends FormBase {
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {
-
+    /**
+    $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    $node = \Drupal\node\Entity\Node::create(array(
+              'type' => 'article',
+              'title' => 'The title',
+              'langcode' => $language,
+              'uid' => 1,
+              'status' => 1,
+              'body' => array('The body text'),
+              'field_date' => array("2000-01-30"),
+                //'field_fields' => array('Custom values'), // Add your custon field values like this
+        ));
+    $node->save();
+    **/
     //$view = Views::getView('aggregator_rss_feed');
     $view = views_get_view_result('sample1','page_1');
     //$view_fields = $view->style_plugin->options['columns'];

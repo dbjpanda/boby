@@ -19,8 +19,8 @@ class TestStorageUpload extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    \Drupal::service('ml_engine.storage')->get_objects('drupal-ml-repo');
-    die();
+    //\Drupal::service('ml_engine.storage')->get_deployment_uri('drupal-ml-repo');
+    //die();
 
     $form['upload1'] = array(
       '#type' => 'file',
@@ -52,7 +52,7 @@ class TestStorageUpload extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     
-   if ($file = file_save_upload('upload1',array('file_validate_extensions' => array('csv gz')), FALSE, 0)) {
+   if ($file = file_save_upload('upload1',array(), FALSE, 0)) {
       $uri = $file->getFileUri();
       $path = drupal_realpath($uri);
     }else{
@@ -60,7 +60,7 @@ class TestStorageUpload extends FormBase {
       return;
     }
 
-    $status = \Drupal::service('ml_engine.storage')->upload_from_file_path($path, 'trainer.tar.gz');
+    $status = \Drupal::service('ml_engine.storage')->upload_from_file_path($path);
 
     $emotion = ($status['success'] ? "status" : "error");
     

@@ -39,7 +39,10 @@ class AutomateController extends ControllerBase {
 
   public function update_task(){
 
-    \Drupal::service('ml_engine.automate')->refresh_cron_list();
+    if(\Drupal::configFactory()->getEditable('ml_engine.test.automate.cron')->get('state') != 1){
+        \Drupal::configFactory()->getEditable('ml_engine.test.automate.cron')->set('run', 1)->save();
+        \Drupal::service('ml_engine.automate')->refresh_cron_list();
+      }
     $url = new RedirectResponse('status');
     $url->send();
   }

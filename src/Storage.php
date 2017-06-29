@@ -88,11 +88,21 @@ class Storage extends MLEngineBase{
     $para = $name ? array('prefix' => $name) : array();
     
     $objects = $bucket->objects($para);
+    return $objects;
+  }
+
+  public function get_deployment_uri($name=''){
+    $objects = $this->get_objects($name);
     
     foreach ($objects as $object) {
-        echo $object->name();
-        echo "<br>";
+        $path_info = pathinfo($object->name());
+
+        if($path_info['extension']=='pb'){
+          return dirname($object->name());
+        }
     }
+
+    return '';
   }
 
 }

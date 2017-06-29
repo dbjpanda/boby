@@ -127,7 +127,7 @@ class Create extends FormBase {
 
     $job_keys=array('package_uri','module','train_data_uri','test_data_uri','verbosity','name','train_steps','output_dir','region','scale_tier');
     $model_keys=array('name', 'description', 'region');
-    $version_keys=array('name', 'default','description','deployment_uri');
+    $version_keys=array('name', 'default','description',/**'deployment_uri'**/);
 
     $jobPara = [];
     
@@ -278,12 +278,13 @@ class Create extends FormBase {
       '#title' => $this->t('Description'),
       '#default_value' => $this->getValue('version_description'),
     );
-
+/**
     $form['version_deployment_uri'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Deployment URL'),
       '#default_value' => $this->getValue('version_deployment_uri'),
     );
+**/
     return $form;
   }
 

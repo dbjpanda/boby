@@ -115,6 +115,10 @@ class Automate extends MLEngineBase{
 
     if ($state == 4){
         $version_details['model_name'] = $model_details['name'];
+        $deployment_uri = \Drupal::service('ml_engine.storage')->get_deployment_uri($this->bucket_repo."/".$job_details['output_dir']);
+        $deployment_full_uri = "gs://".$this->bucket.'/'.$deployment_uri;
+        $version_details['deployment_uri'] = $deployment_full_uri;
+        drupal_set_message($version_details['deployment_uri']);
         $status = $version_service->versionCreate($version_details);
         $this->handle_response('version', $status);
         return;
@@ -189,7 +193,6 @@ class Automate extends MLEngineBase{
         'version_name' => 'drupal_version_'.$this->time,
         'version_default' => 1,
         'version_description' => 'Version made with Drupal',
-        'version_deployment_uri' => 'gs://drupal-ml/out/export/Servo/1496149201877',
       );
 
       return $default;
