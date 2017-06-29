@@ -34,7 +34,7 @@ class Project {
   }
 
   public function get_bucket(){
-    return 'drupal-ml';
+    return $this->get_project()->get('bucket');
   }
 
   public function get_bucket_repo(){

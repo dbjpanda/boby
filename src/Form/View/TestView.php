@@ -5,6 +5,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Views;
 use Drupal\views\ViewsData;
+use GuzzleHttp\Exception\RequestException;
 
 
 class TestView extends FormBase {
@@ -20,34 +21,12 @@ class TestView extends FormBase {
   }
 
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /**
-    $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
-    $node = \Drupal\node\Entity\Node::create(array(
-              'type' => 'article',
-              'title' => 'The title',
-              'langcode' => $language,
-              'uid' => 1,
-              'status' => 1,
-              'body' => array('The body text'),
-              'field_date' => array("2000-01-30"),
-                //'field_fields' => array('Custom values'), // Add your custon field values like this
-        ));
-    $node->save();
-    **/
-    //$view = Views::getView('aggregator_rss_feed');
-    $view = views_get_view_result('sample1','page_1');
-    //$view_fields = $view->style_plugin->options['columns'];
-    //$views_data = ViewsData::get(NULL);
 
-    //print "<pre>";
-    //print_r($view[1]->_entity);
-    //print "</pre>";
-    //die();
-    $form['view'] = array(
+    $form['url'] = array(
       '#type' => 'textfield',
-      '#title' => t('View name'),
-      '#description' => t('Give a view name'),
-      '#default' => $this->config->get('view'),
+      '#title' => t('URL'),
+      '#description' => t('Give a view url'),
+      '#default' => $this->config->get('url'),
     );
 
     $form['actions']['#type'] = 'actions';
@@ -73,9 +52,24 @@ class TestView extends FormBase {
   }
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
+
     $this->config->delete();
-    $view_name = $form_state->getValue('view');
-    $this->config ->set('view', $name) ->save();
+    $url = $form_state->getValue('url');
+    $this->config->set('url', $url) ->save();
+
+    $client = \Drupal::httpClient();
+    $url = $GLOBALS['base_url'].$url;
+    $response = $client->get($url);
+    $data = $response->getBody()->getContents();
+    $code = $response->getStatusCode();
+    $header = $response->getHeaders();
+    $data = explode(PHP_EOL,$data);
+    print "<pre>";
+    //print_r(implode(PHP_EOL, array_slice($data,2, -1)));
+    $csv = implode(PHP_EOL, array_slice($data,2, -1));
+    $storage_service = \Drupal::service('ml_engine.storage')->upload($csv, 'data_drupal.csv');
+    print "</pre>";
+
   }
 
 }

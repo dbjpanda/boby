@@ -44,6 +44,7 @@ class Storage extends MLEngineBase{
 
   public function upload($file, $upload_name){
     $bucket = $this->create_bucket();
+    $upload_name = $this->bucket_repo_name.'/'.$upload_name;
 
     $options = [
          'metadata' => [
@@ -76,10 +77,8 @@ class Storage extends MLEngineBase{
       $file_name_split = explode('/', $path);
       $file_name = end($file_name_split);      
     }
-  
-    $upload_name = $this->bucket_repo_name.'/'.$file_name;
 
-    return $this->upload(fopen($path,'r'), $upload_name);
+    return $this->upload(fopen($path,'r'), $file_name);
   }
 
   public function get_objects($name=''){

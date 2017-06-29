@@ -40,13 +40,30 @@ class Create extends FormBase {
       '#required' => TRUE,
       '#default_value' => $this->getValue('job_module'),
     );
+
     $form['job_train_data_uri'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Training Data View Path'),
+      '#required' => TRUE,
+      '#default_value' => $this->getValue('job_train_data_uri'),
+    );
+
+    $form['job_test_data_uri'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Testing Data View Path'),
+      '#required' => TRUE,
+      '#default_value' => $this->getValue('job_test_data_uri'),
+    );
+
+/**
+    $form['job_test_data_uri'] = array(
       '#type' => 'file',
-      '#title' => $this->t('Training Data'),
+      '#title' => $this->t('Testing Data'),
       '#description' => t('Upload training data as csv file')
       //'#required' => TRUE,
       //'#default_value' => $this->getValue('job_train_data_uri'),
     );
+
     $form['job_test_data_uri'] = array(
       '#type' => 'file',
       '#title' => $this->t('Test Data URI'),
@@ -54,6 +71,7 @@ class Create extends FormBase {
       //'#required' => TRUE,
       //'#default_value' => $this->getValue('job_test_data_uri'),
     );
+**/   
     $form['job_verbosity'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Verbosity'),
@@ -149,22 +167,36 @@ class Create extends FormBase {
       $this->config->set($version_key,${$version_key})->save();
     }
 
+
+    $csv_uploads = array(
+        "train_data_uri" => "drupal_view_train.csv",
+        "test_data_uri" => "drupal_view_test.csv"
+      );
+
+    foreach($csv_uploads as $field_name => $file_upload_name){
+
+      try{
+        $view_upload_response = $this->upload_view(${"job_".$field_name}, $file_upload_name);
+        }
+        catch (\GuzzleHttp\Exception\ClientException $ex){
+            drupal_set_message("please fill in correct correct view export path for ".$field_name);
+            return;
+        }
+        $emotion = $view_upload_response['success'] ? 'status' : 'error';
+        drupal_set_message($view_upload_response['response']['message'], $emotion);
+        
+        if(!$view_upload_response['success']){ return; }
+        
+        $jobPara[$field_name] = $view_upload_response['file_path'];
+    }
+
+
     $file_uploads = array(
         "package_uri" => array(
             'file_display_name' => 'trainer code',
             'extensions' => 'gz',
             'file_upload_name' => 'trainer.tar.gz'
           ),
-        'train_data_uri' => array(
-          'file_display_name' => 'training data',
-          'extensions' => 'csv',
-          'file_upload_name' => 'data.csv',
-          ),
-        'test_data_uri' => array(
-            'file_display_name' => 'testing data',
-            'extensions' => 'csv',
-            'file_upload_name' => 'test.csv',
-          )
       );
 
     foreach ($file_uploads as $field_name => $details) {
@@ -296,6 +328,25 @@ class Create extends FormBase {
       }else{
         return array( 'success' => 0, 'message' => 'Drupal server upload of '.$details['file_display_name']. ' failed');
       }
+  }
+
+  private function upload_view($url, $name){
+    $client = \Drupal::httpClient();
+    $url = $GLOBALS['base_url'].$url;
+    $response = $client->get($url);
+    $data = $response->getBody()->getContents();
+
+    if(!$data){
+      die("View data upload failure");
+    }
+
+    $code = $response->getStatusCode();
+    $header = $response->getHeaders();
+    $data = explode(PHP_EOL,$data);
+    print "<pre>";
+    //print_r(implode(PHP_EOL, array_slice($data,2, -1)));
+    $csv = implode(PHP_EOL, array_slice($data,2, -1));
+    return \Drupal::service('ml_engine.storage')->upload($csv, $name);
   }
 
 
