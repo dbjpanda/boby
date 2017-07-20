@@ -241,3 +241,45 @@ ml_engine.test.view.upload:
     _form: '\Drupal\ml_engine\Form\View\TestViewUpload'
   requirements:
     _permission: 'administer ml_engine'
+
+#########################################################################
+
+entity.ml_engine_project.delete_form:
+  path: '/admin/structure/ml_engine/manage/{ml_engine_project}/delete'
+  defaults:
+    _entity_form: 'ml_engine_project.delete'
+    _title: 'Delete Project'
+  requirements:
+    _entity_access: 'ml_engine_project.delete'
+
+entity.ml_engine_project.collection:
+  path: '/admin/structure/ml_engine'
+  defaults:
+    _entity_list: 'ml_engine_project'
+    _title: 'ML Engine Projects'
+  requirements:
+    _permission: 'administer ml_engine_project'
+
+ml_engine.add:
+  path: '/admin/structure/ml_engine/add'
+  defaults:
+    _entity_form: 'ml_engine_project.add'
+    _title: 'Add ML Engine Project'
+  requirements:
+    _permission: 'administer ml_engine_project'
+
+entity.ml_engine_project.edit_form:
+  path: '/admin/structure/ml_engine/manage/{ml_engine_project}'
+  defaults:
+    _entity_form: 'ml_engine_project.edit'
+    _title: 'Edit ML Engine Project'
+  requirements:
+    _entity_access: 'ml_engine_project.update'
+
+entity.ml_engine_project.canonical:
+  path: '/ml_engine/{ml_engine_project}'
+  defaults:
+    _title: 'ML Engine Project'
+    _controller: '\Drupal\ml_engine\Controller\Project::contactSitePage'
+  requirements:
+    _permission: 'ml_engine_project.view'

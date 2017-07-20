@@ -27,3 +27,12 @@ ml_engine.automate_status_refresh:
   title: 'Refresh'
   appears_on:
     - 'ml_engine.test.automate.status'
+
+#######################################################
+
+ml_engine.add:
+  route_name: ml_engine.add
+  title: 'Add ML Engine Project'
+  weight: 1
+  appears_on:
+    - entity.ml_engine_project.collection

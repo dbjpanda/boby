@@ -9,3 +9,11 @@ ml_engine.test:
   parent: system.admin_config_media
   description: 'Configure Google ML Engine Test.'
   route_name: ml_engine.test
+
+######################################################
+
+entity.ml_engine.collection:
+  title: 'ML Engine Projects'
+  parent: system.admin_structure
+  description: 'Create ML Engine Projects.'
+  route_name: entity.ml_engine_project.collection

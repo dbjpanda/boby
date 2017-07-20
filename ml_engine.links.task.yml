@@ -97,3 +97,10 @@ ml_engine.test.view.upload:
   route_name: ml_engine.test.view.upload
   base_route: ml_engine.test
   title: 'Upload'
+
+#########################################################
+
+entity.ml_engine_project.edit_form:
+  title: 'Edit'
+  route_name: entity.ml_engine_project.edit_form
+  base_route: entity.ml_engine_project.edit_form
