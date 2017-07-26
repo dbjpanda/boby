@@ -1,17 +1,3 @@
-ml_engine.settings:
-  title: 'Google ML Engine Settings'
-  parent: system.admin_config_media
-  description: 'Configure Google ML Engine.'
-  route_name: ml_engine.settings.form
-
-ml_engine.test:
-  title: 'Google ML Engine Test'
-  parent: system.admin_config_media
-  description: 'Configure Google ML Engine Test.'
-  route_name: ml_engine.test
-
-######################################################
-
 entity.ml_engine.collection:
   title: 'ML Engine Projects'
   parent: system.admin_structure

@@ -1,9 +1,0 @@
-administer ml_engine:
-  title: 'Administer Google Cloud ML Engine'
-  description: 'Configure Google Cloud ML Engine.'
-  restrict access: true
-
-###################################################
-
-'administer ml_engine_project':
-  title: 'Administer ML Engine Project'

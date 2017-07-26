@@ -1,38 +1,23 @@
-ml_engine.job_refresh:
-  route_name: ml_engine.test.job.list.refresh
-  title: 'Refresh'
-  appears_on:
-    - 'ml_engine.test.job.list'
-
-ml_engine.model_refresh:
-  route_name: ml_engine.test.model.list.refresh
-  title: 'Refresh'
-  appears_on:
-    - 'ml_engine.test.model.list'
-
-ml_engine.automate_new:
-  route_name: ml_engine.test.automate.new
-  title: 'New'
-  appears_on:
-    - 'ml_engine.test.automate.create'
-
-ml_engine.automate_update:
-  route_name: ml_engine.test.automate.update
-  title: 'Cron Update'
-  appears_on:
-    - 'ml_engine.test.automate.status'
-
-ml_engine.automate_status_refresh:
-  route_name: ml_engine.test.automate.status
-  title: 'Refresh'
-  appears_on:
-    - 'ml_engine.test.automate.status'
-
-#######################################################
-
-ml_engine.add:
-  route_name: ml_engine.add
-  title: 'Add ML Engine Project'
-  weight: 1
+entity.ml_engine_project.add_form:
+  route_name: 'entity.ml_engine_project.add_form'
+  title: 'Add Project'
   appears_on:
     - entity.ml_engine_project.collection
+
+ml_engine_project.run:
+  route_name: 'entity.ml_engine_project.run'
+  title: 'Run'
+  appears_on:
+    - entity.ml_engine_project.status
+
+ml_engine_project.stop:
+  route_name: 'entity.ml_engine_project.stop'
+  title: 'Stop'
+  appears_on:
+    - entity.ml_engine_project.status
+
+ml_engine_project.refresh:
+  route_name: 'entity.ml_engine_project.refresh'
+  title: 'Refresh'
+  appears_on:
+    - entity.ml_engine_project.status

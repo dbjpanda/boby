@@ -1,0 +1,74 @@
+ml_engine.ml_engine_project.*:
+  type: config_entity
+  label: 'ML Engine project'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    arguments:
+      type: text
+      label: 'Arguments'
+    job_name:
+      type: string
+      label: 'Job Name'
+    job_package_uris:
+      type: string
+      label: 'Job Package URIs'
+    job_module:
+      type: string
+      label: 'Job Module'
+    job_train_steps:
+        type: string
+        label: 'Job Training Steps'
+    job_output_dir:
+        type: string
+        label: 'Job Output Directory'
+    job_region:
+        type: string
+        label: 'Job Region'
+    job_scale_tier:
+        type: string
+        label: 'Job Scale Tier'
+    model_name:
+        type: string
+        label: 'Model Name'
+    model_description:
+        type: text
+        label: 'Model Description'
+    model_region:
+        type: string
+        label: 'Model Region'
+    version_name:
+        type: string
+        label: 'Version Name'
+    version_default:
+        type: string
+        label: 'Default Version'
+    version_description:
+        type: text
+        label: 'Version Description'
+    # Associate array with keys job, model, version to store the settings. It will be set on add/edit form submission.
+    cron:
+        type: sequence
+        label: 'Cron'
+        sequence:
+          type: sequence
+          label: 'Key1'
+          sequence:
+            type: sequence
+            label: 'Key2'
+            sequence:
+              type: string
+              label: 'Values'
+    create:
+        type: sequence
+        label: 'Create'
+        sequence:
+          type: sequence
+          label: 'Row'
+          sequence:
+            type: string
+            label: 'Column'

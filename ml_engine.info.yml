@@ -1,5 +1,6 @@
-name: Google Machine Learning Engine
+name: ML Engine
+description: 'Manages ML Engine Projects.'
+package: ML Engine
+
 type: module
-description: Integrate Google Machine Learning Engine to Drupal 8.
-package: Machine Learning
-core: '8.x'
+core: 8.x

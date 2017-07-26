@@ -1,106 +1,16 @@
-ml_engine.test:
-  route_name: ml_engine.test
-  base_route: ml_engine.test
-  title: 'Credential'
-
-ml_engine.test.prediction:
-  route_name: ml_engine.test.prediction.form
-  base_route: ml_engine.test
-  title: 'Predict'
-
-ml_engine.test.job:
-  route_name: ml_engine.test.job.create.form
-  base_route: ml_engine.test
-  title: 'Job'
-
-ml_engine.test.job.create:
-  route_name: ml_engine.test.job.create.form
-  parent_id: ml_engine.test.job
-  title: 'Create'
-
-ml_engine.test.job.get:
-  route_name: ml_engine.test.job.get.form
-  parent_id: ml_engine.test.job
-  title: 'Get'
-
-ml_engine.test.job.list:
-  route_name: ml_engine.test.job.list
-  parent_id: ml_engine.test.job
-  title: 'List'
-
-ml_engine.test.job.cancel.form:
-  route_name: ml_engine.test.job.cancel.form
-  parent_id: ml_engine.test.job
-  title: 'Cancel'  
-
-ml_engine.test.model:
-  route_name: ml_engine.test.model.create.form
-  base_route: ml_engine.test
-  title: 'Model'
-
-ml_engine.test.model.create:
-  route_name: ml_engine.test.model.create.form
-  parent_id: ml_engine.test.model
-  title: 'Create'
-
-ml_engine.test.model.get:
-  route_name: ml_engine.test.model.get.form
-  parent_id: ml_engine.test.model
-  title: 'Get'
-
-ml_engine.test.model.list:
-  route_name: ml_engine.test.model.list
-  parent_id: ml_engine.test.model
-  title: 'List'
-
-ml_engine.test.version:
-  route_name: ml_engine.test.version.create.form
-  base_route: ml_engine.test
-  title: 'Version'
-
-ml_engine.test.version.create:
-  route_name: ml_engine.test.version.create.form
-  parent_id: ml_engine.test.version
-  title: 'Create'
-
-ml_engine.test.version.get:
-  route_name: ml_engine.test.version.get.form
-  parent_id: ml_engine.test.version
-  title: 'Get'
-
-ml_engine.test.automate:
-  route_name: ml_engine.test.automate.create
-  base_route: ml_engine.test
-  title: 'Automate'
-
-ml_engine.test.automate.create:
-  route_name: ml_engine.test.automate.create
-  parent_id: ml_engine.test.automate
-  title: 'Create'
-
-ml_engine.test.automate.status:
-  route_name: ml_engine.test.automate.status
-  parent_id: ml_engine.test.automate
-  title: 'Status'
-
-ml_engine.test.storage:
-  route_name: ml_engine.test.storage.upload.form
-  base_route: ml_engine.test
-  title: 'Storage'
-
-ml_engine.test.view:
-  route_name: ml_engine.test.view
-  base_route: ml_engine.test
-  title: 'View'
-
-ml_engine.test.view.upload:
-  route_name: ml_engine.test.view.upload
-  base_route: ml_engine.test
-  title: 'Upload'
-
-#########################################################
-
-entity.ml_engine_project.edit_form:
-  title: 'Edit'
+# Define the 'local' links for the module
+ml_engine_project.page_edit:
   route_name: entity.ml_engine_project.edit_form
+  base_route: entity.ml_engine_project.edit_form
+  title: Edit
+
+ml_engine_project.delete_confirm:
+  route_name:  entity.ml_engine_project.delete_form
+  base_route:  entity.ml_engine_project.edit_form
+  title: Delete
+  weight: 10
+
+entity.ml_engine_project.status:
+  route_name: entity.ml_engine_project.status
+  title: Status
   base_route: entity.ml_engine_project.edit_form

@@ -1,256 +1,11 @@
-ml_engine.settings.form:
-  path: '/admin/config/media/ml-engine'
-  defaults:
-    _form: 'Drupal\ml_engine\Form\SettingsForm'
-    _title: 'Google Cloud ML Engine Settings'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test:
-  path: '/admin/config/media/ml_engine/test'
+ml_engine.credential:
+  path: '/ml_engine'
   defaults:
     _title: 'ML Engine'
     _description: 'Give the service account credential.'
-    _form: '\Drupal\ml_engine\Form\TestCredential'
+    _form: '\Drupal\ml_engine\Form\Credential'
   requirements:
     _permission: 'administer ml_engine'
-
-ml_engine.test.prediction.form:
-  path: '/admin/config/media/ml_engine/test/predict'
-  defaults:
-    _title: 'ML Engine - Prediction Test'
-    _description: 'Give the predictions URL and json data and get back predictions.'
-    _form: '\Drupal\ml_engine\Form\TestPredict'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.job:
-  path: '/admin/config/media/ml_engine/test/job'
-  defaults:
-    _title: 'Job'
-    _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\Job\TestJobCreate'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.job.create.form:
-  path: '/admin/config/media/ml_engine/test/job/create'
-  defaults:
-    _title: 'ML Engine - Job Create'
-    _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\Job\TestJobCreate'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.job.get.form:
-  path: '/admin/config/media/ml_engine/test/job/get'
-  defaults:
-    _title: 'ML Engine - Job Get'
-    _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\Job\TestJobGet'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.job.list:
-  path: '/admin/config/media/ml_engine/test/job/list'
-  defaults:
-    _title: 'ML Engine - Job List'
-    _description: 'Try Job'
-    _controller: '\Drupal\ml_engine\Controller\JobController::overview'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.job.list.refresh:
-  path: '/admin/config/media/ml_engine/test/job/list/refresh'
-  defaults:
-    _title: 'ML Engine - Job List Refresh'
-    _description: 'Try Job'
-    _controller: '\Drupal\ml_engine\Controller\JobController::refresh_overview_page'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.job.cancel.form:
-  path: '/admin/config/media/ml_engine/test/job/cancel'
-  defaults:
-    _title: 'ML Engine - Job Cancel'
-    _description: 'Try Job'
-    _form: '\Drupal\ml_engine\Form\Job\TestJobCancel'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.job.cancel:
-  path: '/admin/config/media/ml_engine/test/job/cancel/{job}'
-  defaults:
-    _title: 'ML Engine - Job Cancel'
-    _description: 'Try Job'
-    _controller: '\Drupal\ml_engine\Controller\JobController::cancelList'
-  requirements:
-    _permission: 'administer ml_engine'
-
-
-ml_engine.test.model.create.form:
-  path: '/admin/config/media/ml_engine/test/model/create'
-  defaults:
-    _title: 'ML Engine - Model Create'
-    _description: 'Create Model'
-    _form: '\Drupal\ml_engine\Form\Model\TestModelCreate'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.model.get.form:
-  path: '/admin/config/media/ml_engine/test/model/get'
-  defaults:
-    _title: 'ML Engine - Model Get'
-    _description: 'Get model details'
-    _form: '\Drupal\ml_engine\Form\Model\TestModelGet'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.model.list:
-  path: '/admin/config/media/ml_engine/test/model/list'
-  defaults:
-    _title: 'ML Engine - Model List'
-    _description: 'Get Model List'
-    _controller: '\Drupal\ml_engine\Controller\ModelController::overview'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.model.list.refresh:
-  path: '/admin/config/media/ml_engine/test/model/list/refresh'
-  defaults:
-    _title: 'ML Engine - Model List Refresh'
-    _description: 'Refresh Model Overview page to get updated list'
-    _controller: '\Drupal\ml_engine\Controller\ModelController::refresh_overview_page'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.model.delete:
-  path: '/admin/config/media/ml_engine/test/model/delete/{model}'
-  defaults:
-    _title: 'ML Engine - Model Delete'
-    _description: 'Delete Model'
-    _controller: '\Drupal\ml_engine\Controller\ModelController::deleteList'
-  requirements:
-    _permission: 'administer ml_engine'
-
-
-ml_engine.test.version.create.form:
-  path: '/admin/config/media/ml_engine/test/version/create'
-  defaults:
-    _title: 'ML Engine - Version Create'
-    _description: 'Create Version'
-    _form: '\Drupal\ml_engine\Form\Version\TestVersionCreate'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.version.get.form:
-  path: '/admin/config/media/ml_engine/test/version/get'
-  defaults:
-    _title: 'ML Engine - Version Get'
-    _description: 'Get model details'
-    _form: '\Drupal\ml_engine\Form\Version\TestVersionGet'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.version.list:
-  path: '/admin/config/media/ml_engine/test/model/{model_name}/versions'
-  defaults:
-    _title: 'ML Engine - Job List'
-    _description: 'Try Job'
-    _controller: '\Drupal\ml_engine\Controller\VersionController::overview'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.version.list.refresh:
-  path: '/admin/config/media/ml_engine/test/model/{model}/versions/refresh'
-  defaults:
-    _title: 'ML Engine - Model List Refresh'
-    _description: 'Refresh Version Overview page to get updated list'
-    _controller: '\Drupal\ml_engine\Controller\VersionController::refresh_overview_page'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.version.delete:
-  path: '/admin/config/media/ml_engine/test/model/{model}/versions/{version}/delete'
-  defaults:
-    _title: 'ML Engine - Model Delete'
-    _description: 'Delete Model'
-    _controller: '\Drupal\ml_engine\Controller\VersionController::deleteList'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.automate.create:
-  path: '/admin/config/media/ml_engine/test/automate/create'
-  defaults:
-    _title: 'ML Engine - Automation'
-    _description: 'Preforms the cycle of traning and deployment'
-    _form: '\Drupal\ml_engine\Form\Automate\Create'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.automate.status:
-  path: '/admin/config/media/ml_engine/test/automate/status'
-  defaults:
-    _title: 'ML Engine - Automation Status'
-    _description: 'Get status of the cycle of traning and deployment'
-    _controller: '\Drupal\ml_engine\Controller\AutomateController::overview'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.automate.new:
-  path: '/admin/config/media/ml_engine/test/automate/new'
-  defaults:
-    _title: 'New task'
-    _description: 'Delete all the variables of old automated task.'
-    _controller: '\Drupal\ml_engine\Controller\AutomateController::new_task'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.automate.update:
-  path: '/admin/config/media/ml_engine/test/automate/update'
-  defaults:
-    _title: 'Update'
-    _description: 'Update the status of the automated task.'
-    _controller: '\Drupal\ml_engine\Controller\AutomateController::update_task'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.storage.upload.form:
-  path: '/admin/config/media/ml_engine/test/storage/upload'
-  defaults:
-    _title: 'ML Engine - Storage Upload'
-    _description: 'Create Model'
-    _form: '\Drupal\ml_engine\Form\Storage\TestStorageUpload'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.view:
-  path: '/admin/config/media/ml_engine/test/view'
-  defaults:
-    _title: 'ML Engine - View'
-    _description: 'View'
-    _form: '\Drupal\ml_engine\Form\View\TestView'
-  requirements:
-    _permission: 'administer ml_engine'
-
-ml_engine.test.view.upload:
-  path: '/admin/config/media/ml_engine/test/view/upload'
-  defaults:
-    _title: 'ML Engine - Upload'
-    _description: 'View'
-    _form: '\Drupal\ml_engine\Form\View\TestViewUpload'
-  requirements:
-    _permission: 'administer ml_engine'
-
-#########################################################################
-
-entity.ml_engine_project.delete_form:
-  path: '/admin/structure/ml_engine/manage/{ml_engine_project}/delete'
-  defaults:
-    _entity_form: 'ml_engine_project.delete'
-    _title: 'Delete Project'
-  requirements:
-    _entity_access: 'ml_engine_project.delete'
 
 entity.ml_engine_project.collection:
   path: '/admin/structure/ml_engine'
@@ -258,28 +13,60 @@ entity.ml_engine_project.collection:
     _entity_list: 'ml_engine_project'
     _title: 'ML Engine Projects'
   requirements:
-    _permission: 'administer ml_engine_project'
+    _permission: 'administer ml_engine'
 
-ml_engine.add:
+entity.ml_engine_project.add_form:
   path: '/admin/structure/ml_engine/add'
   defaults:
     _entity_form: 'ml_engine_project.add'
-    _title: 'Add ML Engine Project'
+    _title: 'Add Project'
   requirements:
-    _permission: 'administer ml_engine_project'
+    _permission: 'administer ml_engine'
 
 entity.ml_engine_project.edit_form:
-  path: '/admin/structure/ml_engine/manage/{ml_engine_project}'
+  path: '/admin/structure/ml_engine/{ml_engine_project}'
   defaults:
     _entity_form: 'ml_engine_project.edit'
-    _title: 'Edit ML Engine Project'
+    _title: 'Edit Project'
   requirements:
-    _entity_access: 'ml_engine_project.update'
+    _permission: 'administer ml_engine'
 
-entity.ml_engine_project.canonical:
-  path: '/ml_engine/{ml_engine_project}'
+entity.ml_engine_project.delete_form:
+  path: '/admin/structure/ml_engine/{ml_engine_project}/delete'
   defaults:
-    _title: 'ML Engine Project'
-    _controller: '\Drupal\ml_engine\Controller\Project::contactSitePage'
+    _entity_form: 'ml_engine_project.delete'
+    _title: 'Delete Project'
   requirements:
-    _permission: 'ml_engine_project.view'
+    _permission: 'administer ml_engine'
+
+entity.ml_engine_project.status:
+  path: 'admin/structure/ml_engine/{ml_engine_project}/status'
+  defaults:
+    _controller: '\Drupal\ml_engine\Controller\ProjectController::status'
+    _title: 'ML Engine Project Status'
+  requirements:
+    _permission: 'administer ml_engine'
+
+entity.ml_engine_project.run:
+  path: 'admin/structure/ml_engine/{ml_engine_project}/run'
+  defaults:
+    _title: 'Run'
+    _controller: '\Drupal\ml_engine\Controller\ProjectController::run'
+  requirements:
+    _permission: 'administer ml_engine'
+
+entity.ml_engine_project.stop:
+  path: 'admin/structure/ml_engine/{ml_engine_project}/stop'
+  defaults:
+    _title: 'Stop'
+    _controller: '\Drupal\ml_engine\Controller\ProjectController::stop'
+  requirements:
+    _permission: 'administer ml_engine'
+
+entity.ml_engine_project.refresh:
+  path: 'admin/structure/ml_engine/{ml_engine_project}/refresh'
+  defaults:
+    _title: 'Refresh'
+    _controller: '\Drupal\ml_engine\Controller\ProjectController::refresh'
+  requirements:
+    _permission: 'administer ml_engine'

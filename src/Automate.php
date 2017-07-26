@@ -9,19 +9,18 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\ml_engine\MLEngineBase;
+use Drupal\ml_engine\ProjectInterface;
 
 class Automate extends MLEngineBase{
 
   public $config;
   public $time;
   private $max_states;
-  private $cron;
+  public $project;
 
   public function __construct() {
       parent::__construct();
       $this->time = time();
-      $this->config = \Drupal::configFactory()->getEditable('ml_engine.test.automate.create');
-      $this->cron = \Drupal::configFactory()->getEditable('ml_engine.test.automate.cron');
       $this->max_states = 5;
   }
 
@@ -29,48 +28,60 @@ class Automate extends MLEngineBase{
      return new static();
   }
 
-  public function getValue($key){
-      $value = $this->config->get($key);
-      if($value) { return $value; }
-
-      $defaults = array_merge($this->modelDefault(), $this->jobDefault(), $this->versionDefault());
-      return $defaults[$key];
+  public function set_project(ProjectInterface $project){
+    $this->project = $project;
+    return $this;
   }
 
-  public function automate($job, $model, $version){
+  public function get_cron(){
+    return $this->project->get_cron();
+  }
+
+  public function set_cron($value){
+    $this->project->set_cron($value)->save();
+    return $this->project;
+  }
+
+
+  public function automate(){
       
-      $this->cron->set('run',1)->save();
-      $this->cron->set('job', $job)->save();
-      $this->cron->set('model', $model)->save();
-      $this->cron->set('version', $version)->save();
-      $this->refresh_cron_list();
+    $cron = $this->get_cron();
+    $cron['run'] = 1;
+    $this->set_cron($cron);
+
+    $this->refresh_cron_list();
   }
 
   private function add_to_state_list(array $record){
-    $status_list = $this->cron->get('list');
-    $status_list[] = $record;
-    $this->cron->set('list', $status_list)->save();
+    $cron = $this->get_cron();
+    $cron['list'][] = $record;
+    $this->set_cron($cron);
     return;
   }
 
   private function stop_run(){
-    $this->cron->set('run', 0)->save();
+    $cron = $this->get_cron();
+    $cron['run'] = 0;
+    $this->set_cron($cron);
   }
 
   private function add_state(){
-    $state = $this->cron->get('state');
+    $cron = $this->get_cron();
+    $state = $cron['state'];
     $new_state = $state + 1;
     if($new_state >= $this->max_states){
       $new_state = 0;
-    } 
-    $this->cron->set('state', $new_state)->save();
+    }
+    $cron['state'] = $new_state;
+    $this->set_cron($cron);
   }
 
   private function handle_response($type, $status){
 
-    $job_details = $this->cron->get('job');
-    $model_details = $this->cron->get('model');
-    $version_details = $this->cron->get('version');
+    $cron = $this->get_cron();
+    $job_details = $cron['job'];
+    $model_details = $cron['model'];
+    $version_details = $cron['version'];
 
     $record = [$type, ${$type.'_details'}['name'],$status['response']['message']];
     $this->add_to_state_list($record);
@@ -85,8 +96,9 @@ class Automate extends MLEngineBase{
   }
 
   public function refresh_cron_list() {
+    $cron = $this->get_cron();
 
-    if(!$this->cron->get('run')){
+    if(!$cron['run']){
       return;
     }
     
@@ -94,11 +106,11 @@ class Automate extends MLEngineBase{
     $model_service = \Drupal::service('ml_engine.model');
     $version_service = \Drupal::service('ml_engine.version');
 
-    $job_details = $this->cron->get('job');
-    $model_details = $this->cron->get('model');
-    $version_details = $this->cron->get('version');
+    $job_details = $cron['job'];
+    $model_details = $cron['model'];
+    $version_details = $cron['version'];
 
-    $state = $this->cron->get('state');
+    $state = $cron['state'];
     echo $state;
 
     if ($state == 1){
@@ -161,40 +173,4 @@ class Automate extends MLEngineBase{
 
   }
 
-  public function jobDefault(){
-      $default = array(
-          'job_package_uri' => '',
-          'job_module' => '',
-          'job_train_data_uri' => '',
-          'job_test_data_uri' => '',
-          'job_verbosity' => 'DEBUG',
-          'job_name' => 'drupal_job_'.$this->time,
-          'job_train_steps' => 1000,
-          'job_output_dir' => 'out_'.$this->time,
-          'job_region' => 'us-east1',
-          'job_scale_tier' => 'BASIC',
-      );
-
-      return $default;
-  }
-
-  public function modelDefault(){
-      $default = array(
-        'model_name' => 'drupal_model_'.$this->time,
-        'model_description' => 'Model made with Drupal',
-        'model_region' => 'us-central1'
-      );
-
-      return $default;
-  }
-
-  public function versionDefault(){
-      $default =  array(
-        'version_name' => 'drupal_version_'.$this->time,
-        'version_default' => 1,
-        'version_description' => 'Version made with Drupal',
-      );
-
-      return $default;
-  }
 }

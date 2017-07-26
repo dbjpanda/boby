@@ -1,11 +1,15 @@
 <?php
 
 function ml_engine_cron(){
-	$config = \Drupal::configFactory()->getEditable('ml_engine.test.automate.cron');
-	
-	if($config->get('run')){
-		\Drupal::service('ml_engine.automate')->refresh_cron_list();
-	}
 
+  foreach(\Drupal::entityManager()->getStorage('ml_engine_project')->loadMultiple() as $project) {
+    $cron = $project->get_cron();
+
+    if(array_key_exists("run", $cron) && $cron['run']){
+      \Drupal::service('ml_engine.automate')
+        ->set_project($project)
+        ->refresh_cron_list();
+    }
+  }
 	return;
 }

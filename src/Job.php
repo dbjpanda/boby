@@ -9,6 +9,7 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\ml_engine\MLEngineBase;
+use Drupal\ml_engine\ProjectInterface;
 
 class Job extends MLEngineBase{
 
@@ -27,6 +28,10 @@ class Job extends MLEngineBase{
           "failure" => array('FAILED', 'CANCELLED','CANCELLING','STATE_UNSPECIFIED'),
           "on_going" => array('QUEUED','PREPARING','RUNNING'),
         );
+  }
+
+  public function set_config(ProjectInterface $project){
+    $this->config = $project;
   }
 
   public static function create(ContainerInterface $container) {
@@ -85,17 +90,18 @@ class Job extends MLEngineBase{
       foreach (array_keys($para) as $key) {
         ${$key} = $para[$key];
       }
-      $arguments_array = ['--train-files', $train_data_uri, '--eval-files', $test_data_uri,
-                          '--train-steps', $train_steps, '--verbosity', $verbosity];
-      $package_array = array($package_uri);
+      
+      //$arguments_array = ['--train-files', $train_data_uri, '--eval-files', $test_data_uri,
+      //                    '--train-steps', $train_steps, '--verbosity', $verbosity];
+
       $input = new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1TrainingInput();
       
       $input->setScaleTier($scale_tier);
-      $input->setPackageUris($package_array);
+      $input->setPackageUris($package_uris);
       $input->setPythonModule($module);
       $input->setRegion($region);
       $input->setJobDir("gs://".$this->bucket.'/'.$this->bucket_repo.'/'.$output_dir);
-      $input->setArgs($arguments_array);
+      $input->setArgs($arguments);
       
       return $input;
   }

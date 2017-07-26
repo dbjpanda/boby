@@ -5,7 +5,7 @@ namespace Drupal\ml_engine\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
-class TestCredential extends FormBase {
+class Credential extends FormBase {
 
   public $config;
 
