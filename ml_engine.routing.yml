@@ -70,3 +70,19 @@ entity.ml_engine_project.refresh:
     _controller: '\Drupal\ml_engine\Controller\ProjectController::refresh'
   requirements:
     _permission: 'administer ml_engine'
+
+entity.ml_engine_project.prediction_settings:
+  path: 'admin/structure/ml_engine/{ml_engine_project}/prediction_settings'
+  defaults:
+    _title: 'Prediction Settings'
+    _entity_form: 'ml_engine_project.prediction_settings'
+  requirements:
+    _permission: 'administer ml_engine'
+
+entity.ml_engine_project.predict:
+  path: 'admin/structure/ml_engine/{ml_engine_project}/predict'
+  defaults:
+    _title: 'Predict'
+    _entity_form: 'ml_engine_project.predict'
+  requirements:
+    _permission: 'administer ml_engine'

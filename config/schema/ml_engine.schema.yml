@@ -72,3 +72,18 @@ ml_engine.ml_engine_project.*:
           sequence:
             type: string
             label: 'Column'
+
+    prediction_plugin:
+        type: string
+        label: 'Project Plugin'
+
+    prediction_field_list:
+        type: sequence
+        label: 'Prediction Field List'
+        sequence:
+          type: string
+          label: 'field'
+
+    prediction_input:
+      type: text
+      label: 'Prediction Input'

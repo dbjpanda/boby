@@ -1,4 +1,5 @@
 <?php
+use Drupal\Core\Form\FormStateInterface;
 
 function ml_engine_cron(){
 
@@ -13,3 +14,112 @@ function ml_engine_cron(){
   }
 	return;
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter() for \Drupal\node\NodeTypeForm.
+ *
+ * Adds menu options to the node type form.
+ *
+ * @see NodeTypeForm::form()
+ * @see menu_ui_form_node_type_form_submit()
+ */
+/**
+function ml_engine_form_node_type_form_alter(&$form, FormStateInterface $form_state) {
+
+	$map = \Drupal::configFactory()->getEditable('ml_engine.project.map');
+	$list = \Drupal::configFactory()->getEditable('ml_engine.project.map.list');
+	$node_id = $form_state->getFormObject()->getEntity()->id();
+
+	$projects = \Drupal::entityTypeManager()
+	->getStorage('ml_engine_project')
+  	->loadMultiple();
+	
+	$node_id = $form_state->getFormObject()->getEntity()->id();
+  	$options = array();
+    foreach ($projects as $project) {
+      $options[$project->id()] = $project->label();
+    }
+
+    $form['ml_engine'] = [
+      '#type' => 'details',
+      '#title' => t('ML Engine settings'),
+      '#group' => 'additional_settings',
+    ];
+    $form['ml_engine']['ml_engine_project'] = array(
+      '#type' => 'select',
+      '#options' => $options,
+      '#empty_value' => "",
+      '#title' => t('Select a project'),
+      '#default_value' => $node_id ? $map->get($node_id,""): "",
+    );
+
+
+    if($node_id && $map->get($node_id)){
+	    $project = \Drupal::entityTypeManager()
+		->getStorage('ml_engine_project')
+	  	->load($map->get($node_id));
+
+	    $prediction_field_map = $project->get_prediction_field_list();
+	    
+	    $form['ml_engine']['ml_engine_prediction_map'] = array(
+	      '#type' => 'textarea',
+	      '#title' => 'ML Engine Prediction Inputs',
+	      '#default_value' => implode(",", $list->get($node_id, array("Text Field 1","Text Field 2", "..."))),
+	      '#description' => "List the field its label in the following order. ".implode(",", $prediction_field_map),
+	      '#maxlength' => 255,
+	    );
+	}
+  	
+  	foreach (array_keys($form['actions']) as $action) {
+    	if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+      	$form['actions'][$action]['#submit'][] = 'ml_engine_form_node_type_form_submit';
+    }
+  }
+}
+**/
+/**
+ * Form submission handler for menu item field on the node form.
+ *
+ * @see menu_ui_form_node_form_alter()
+ */
+/**
+function ml_engine_form_node_type_form_submit($form, FormStateInterface $form_state) {
+  $map = \Drupal::configFactory()->getEditable('ml_engine.project.map');
+  $list = \Drupal::configFactory()->getEditable('ml_engine.project.map.list');
+  
+  $node_id = $form_state->getFormObject()->getEntity()->id();
+
+  $map->set($node_id, $form_state->getValue('ml_engine_project'))
+  ->save();
+  $list->set($node_id, array_map('trim', explode(",", $form_state->getValue('ml_engine_prediction_map'))))
+  ->save(); 
+}
+
+function ml_engine_form_node_form_alter(&$form, FormStateInterface $form_state) {
+    foreach (array_keys($form['actions']) as $action) {
+      if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+        $form['actions'][$action]['#submit'][] = 'ml_engine_node_submit';
+    }
+  }
+}
+
+function ml_engine_node_submit($form, FormStateInterface $form_state){
+  $node = $form_state->getFormObject()->getEntity();
+  $node_type_id = $node->type->entity->id();
+
+  $map = \Drupal::configFactory()->getEditable('ml_engine.project.map');
+  $list = \Drupal::configFactory()->getEditable('ml_engine.project.map.list');
+  
+  $project_id = $map->get($node_type_id,"");
+  if(!$project_id){
+    return;
+  }
+
+  $project = \Drupal::entityTypeManager()->getStorage('ml_engine_project')->load($project_id);
+  
+  $project_prediction_field_list = $project->get_prediction_field_list();
+
+  print_r($form_state->getValue("title")->getValue());
+  die();
+}
+**/

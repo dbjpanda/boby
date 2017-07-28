@@ -41,4 +41,12 @@ interface ProjectInterface extends ConfigEntityInterface {
 
   public function set_create($value);
 
+  public function get_prediction_plugin();
+
+  public function set_prediction_plugin($value);
+
+  public function get_prediction_field_list();
+
+  public function set_prediction_field_list($value);
+
 }

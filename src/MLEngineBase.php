@@ -32,5 +32,16 @@ class MLEngineBase {
     return \Drupal::service('ml_engine.cloud_service')->create_service();
   }
 
+  public function object_dismount($object) {
+    $reflectionClass = new \ReflectionClass(get_class($object));
+    $array = array();
+    foreach ($reflectionClass->getProperties() as $property) {
+        $property->setAccessible(true);
+        $array[$property->getName()] = $property->getValue($object);
+        $property->setAccessible(false);
+    }
+    return $array;
+  }
+
 
 }

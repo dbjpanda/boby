@@ -30,3 +30,7 @@ services:
   ml_engine.cloud_service:
     class: Drupal\ml_engine\MLEngineService
     arguments: []
+
+  plugin.manager.ml_engine_prediction_output_settings:
+    class: Drupal\ml_engine\PredictionSettingsPluginManager
+    parent: default_plugin_manager

@@ -22,10 +22,10 @@ class Predict extends MLEngineBase{
       $service = $this->create_service();
       try{
         $response = $service->projects->predict($model_full_name, new \Google_Service_CloudMachineLearningEngine_GoogleCloudMlV1PredictRequest($data));
-          return array( "success" => 1, "response" => $response );
+          return array( "success" => 1, "response" => $this->object_dismount($response) );
       }catch (\Google_Service_Exception $ex){
           $error = json_decode($ex->getMessage(), true)['error'];
-          return array( "success" => 0, "response" => $error);
+          return array( "success" => 0, "response" => $this->object_dismount($error));
       }
   }
 

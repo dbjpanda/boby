@@ -14,3 +14,13 @@ entity.ml_engine_project.status:
   route_name: entity.ml_engine_project.status
   title: Status
   base_route: entity.ml_engine_project.edit_form
+
+entity.ml_engine_project.prediction_settings:
+  route_name: entity.ml_engine_project.prediction_settings
+  title: Prediction Settings
+  base_route: entity.ml_engine_project.edit_form
+
+entity.ml_engine_project.predict:
+  route_name: entity.ml_engine_project.predict
+  title: Predict
+  base_route: entity.ml_engine_project.edit_form

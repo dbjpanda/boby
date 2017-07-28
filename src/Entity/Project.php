@@ -17,6 +17,8 @@ use Drupal\ml_engine\ProjectInterface;
  *       "add" = "Drupal\ml_engine\Form\ProjectAddForm",
  *       "edit" = "Drupal\ml_engine\Form\ProjectEditForm",
  *       "delete" = "Drupal\ml_engine\Form\ProjectDeleteForm",
+ *       "prediction_settings" = "Drupal\ml_engine\Form\PredictionSettings",
+  *      "predict" = "Drupal\ml_engine\Form\ProjectPredict"
  *     }
  *   },
  *   config_prefix = "ml_engine_project",
@@ -65,6 +67,11 @@ class Project extends ConfigEntityBase implements ProjectInterface {
 
   protected $version_description;
 
+  protected $prediction_plugin;
+
+  protected $prediction_field_list;
+
+  protected $prediction_input;
 
   // Associate array with keys (job, model, version) to store the settings. It will be set on add/edit form submission.
   // It has the key "run" to indicate to pause and resume the automated task.
@@ -152,5 +159,31 @@ class Project extends ConfigEntityBase implements ProjectInterface {
     return $this;
   }
 
+  public function get_prediction_plugin(){
+    return $this->prediction_plugin;
+  }
+
+  public function set_prediction_plugin($value){
+    $this->prediction_plugin = $value;
+    return $this;
+  }
+
+  public function get_prediction_field_list(){
+    return $this->prediction_field_list;
+  }
+
+  public function set_prediction_field_list($value){
+    $this->prediction_field_list = array_map('trim',explode(",",$value));
+    return $this;
+  }
+
+  public function get_prediction_input(){
+    return $this->prediction_input;
+  }
+
+  public function set_prediction_input($value){
+    $this->prediction_input = $value;
+    return $this;
+  }
 
 }
